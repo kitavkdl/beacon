@@ -1,13 +1,48 @@
-// Scripted walk used by the simulation, the integration test and the bench.
-// Waypoints are venue meters, converted from plan pixels with scripts/trace-ncs.mjs's transform
-// (pixel source in the comments). The route stays on corridors, the atrium floor and its galleries.
+// Scripted walks used by the simulation, the integration tests and the bench.
+// A tour is a closed loop of waypoints (venue meters) walked at WALK_SPEED; a floor change is a stair leg.
 import type { Pose } from '../engine/simulator';
 
 export const WALK_SPEED = 1.2; // m/s
 /** Time to climb or descend one flight; the floor switches halfway. */
 export const STAIR_S = 8;
 
-export const TOUR: Pose[] = [
+export interface Tour {
+  waypoints: Pose[];
+  /** Length of one loop, seconds. */
+  seconds: number;
+  /** Where the walker is `t` seconds into the (looping) tour. */
+  poseAt: (t: number) => Pose;
+}
+
+const legSeconds = (a: Pose, b: Pose) =>
+  a.floor !== b.floor ? STAIR_S * Math.abs(b.floor - a.floor) : Math.hypot(b.x - a.x, b.y - a.y) / WALK_SPEED;
+
+/** Closed loop: the last waypoint walks back to the first. */
+export function makeTour(waypoints: Pose[]): Tour {
+  const legs = waypoints.map((a, i) => {
+    const b = waypoints[(i + 1) % waypoints.length];
+    return { a, b, s: legSeconds(a, b) };
+  });
+  const seconds = legs.reduce((s, l) => s + l.s, 0);
+  const poseAt = (t: number): Pose => {
+    let r = ((t % seconds) + seconds) % seconds;
+    for (const { a, b, s } of legs) {
+      if (r > s) {
+        r -= s;
+        continue;
+      }
+      const k = s === 0 ? 0 : r / s;
+      const floor = a.floor === b.floor ? a.floor : Math.round(a.floor + (b.floor - a.floor) * k);
+      return { floor, x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k };
+    }
+    return { ...waypoints[0] };
+  };
+  return { waypoints, seconds, poseAt };
+}
+
+// NCS: waypoints converted from plan pixels with scripts/trace-ncs.mjs's transform (pixel source in the comments).
+// The route stays on corridors, the atrium floor and its galleries.
+export const NCS_TOUR = makeTour([
   { floor: 1, x: 18.8, y: 0.8 }, // Main entrance (F1 px 447,1590)
   { floor: 1, x: 18.8, y: 5.8 }, // Atrium, south end (447,1500)
   { floor: 1, x: 18.8, y: 69.7 }, // Atrium, north end (447,340)
@@ -35,26 +70,4 @@ export const TOUR: Pose[] = [
   { floor: 1, x: 13.2, y: 72.5 }, // North lobby, west
   { floor: 1, x: 18.5, y: 71.9 }, // North lobby
   { floor: 1, x: 18.8, y: 69.7 }, // Atrium, north end; then south back to the entrance
-];
-
-const legSeconds = (a: Pose, b: Pose) =>
-  a.floor !== b.floor ? STAIR_S * Math.abs(b.floor - a.floor) : Math.hypot(b.x - a.x, b.y - a.y) / WALK_SPEED;
-
-// Closed loop: the last waypoint walks back to the first.
-const LEGS = TOUR.map((a, i) => ({ a, b: TOUR[(i + 1) % TOUR.length], s: legSeconds(a, TOUR[(i + 1) % TOUR.length]) }));
-export const TOUR_SECONDS = LEGS.reduce((s, l) => s + l.s, 0);
-
-/** Where the walker is `t` seconds into the (looping) tour. */
-export function tourPose(t: number): Pose {
-  let r = ((t % TOUR_SECONDS) + TOUR_SECONDS) % TOUR_SECONDS;
-  for (const { a, b, s } of LEGS) {
-    if (r > s) {
-      r -= s;
-      continue;
-    }
-    const k = s === 0 ? 0 : r / s;
-    const floor = a.floor === b.floor ? a.floor : Math.round(a.floor + (b.floor - a.floor) * k);
-    return { floor, x: a.x + (b.x - a.x) * k, y: a.y + (b.y - a.y) * k };
-  }
-  return { ...TOUR[0] };
-}
+]);

@@ -4,7 +4,7 @@
 export type Vec2 = [number, number];
 export type Polygon = Vec2[];
 
-/** IMDF unit categories used in NCS. */
+/** IMDF unit categories used by the venues. */
 export type Category =
   | 'office'
   | 'laboratory'

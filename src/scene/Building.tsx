@@ -1,4 +1,4 @@
-// Stacked NCS floors. Each floor group is rotated -90° about X, so polygons are drawn in venue (x, y)
+// Stacked venue floors. Each floor group is rotated -90° about X, so polygons are drawn in venue (x, y)
 // and "up" is local +z; world position is (x, elevation, -y).
 import { useEffect, useMemo } from 'react';
 import * as THREE from 'three';
