@@ -1,0 +1,362 @@
+[
+ {
+  "scenario": "walk",
+  "estimator": "proximity",
+  "filter": "kalman",
+  "sigma": 2,
+  "median": 4.5,
+  "p90": 7.12,
+  "floorRate": 0.9763,
+  "spaceRate": 0.4804
+ },
+ {
+  "scenario": "rooms",
+  "estimator": "proximity",
+  "filter": "kalman",
+  "sigma": 2,
+  "median": 4.65,
+  "p90": 7.58,
+  "floorRate": 1,
+  "spaceRate": 0.2339
+ },
+ {
+  "scenario": "walk",
+  "estimator": "proximity",
+  "filter": "kalman",
+  "sigma": 4,
+  "median": 4.56,
+  "p90": 7.22,
+  "floorRate": 0.977,
+  "spaceRate": 0.4788
+ },
+ {
+  "scenario": "rooms",
+  "estimator": "proximity",
+  "filter": "kalman",
+  "sigma": 4,
+  "median": 4.65,
+  "p90": 7.68,
+  "floorRate": 1,
+  "spaceRate": 0.2339
+ },
+ {
+  "scenario": "walk",
+  "estimator": "proximity",
+  "filter": "kalman",
+  "sigma": 6,
+  "median": 4.6,
+  "p90": 7.43,
+  "floorRate": 0.9749,
+  "spaceRate": 0.4701
+ },
+ {
+  "scenario": "rooms",
+  "estimator": "proximity",
+  "filter": "kalman",
+  "sigma": 6,
+  "median": 4.67,
+  "p90": 8.12,
+  "floorRate": 1,
+  "spaceRate": 0.2339
+ },
+ {
+  "scenario": "walk",
+  "estimator": "proximity",
+  "filter": "kalman",
+  "sigma": 8,
+  "median": 4.71,
+  "p90": 7.89,
+  "floorRate": 0.9729,
+  "spaceRate": 0.4626
+ },
+ {
+  "scenario": "rooms",
+  "estimator": "proximity",
+  "filter": "kalman",
+  "sigma": 8,
+  "median": 4.69,
+  "p90": 9,
+  "floorRate": 1,
+  "spaceRate": 0.2321
+ },
+ {
+  "scenario": "walk",
+  "estimator": "centroid",
+  "filter": "kalman",
+  "sigma": 2,
+  "median": 2.32,
+  "p90": 4.77,
+  "floorRate": 0.9763,
+  "spaceRate": 0.676
+ },
+ {
+  "scenario": "rooms",
+  "estimator": "centroid",
+  "filter": "kalman",
+  "sigma": 2,
+  "median": 2.38,
+  "p90": 5.8,
+  "floorRate": 1,
+  "spaceRate": 0.445
+ },
+ {
+  "scenario": "walk",
+  "estimator": "centroid",
+  "filter": "kalman",
+  "sigma": 4,
+  "median": 2.33,
+  "p90": 4.87,
+  "floorRate": 0.977,
+  "spaceRate": 0.6532
+ },
+ {
+  "scenario": "rooms",
+  "estimator": "centroid",
+  "filter": "kalman",
+  "sigma": 4,
+  "median": 2.44,
+  "p90": 5.97,
+  "floorRate": 1,
+  "spaceRate": 0.438
+ },
+ {
+  "scenario": "walk",
+  "estimator": "centroid",
+  "filter": "kalman",
+  "sigma": 6,
+  "median": 2.42,
+  "p90": 5.11,
+  "floorRate": 0.9749,
+  "spaceRate": 0.6293
+ },
+ {
+  "scenario": "rooms",
+  "estimator": "centroid",
+  "filter": "kalman",
+  "sigma": 6,
+  "median": 2.55,
+  "p90": 6.24,
+  "floorRate": 1,
+  "spaceRate": 0.4293
+ },
+ {
+  "scenario": "walk",
+  "estimator": "centroid",
+  "filter": "kalman",
+  "sigma": 8,
+  "median": 2.62,
+  "p90": 5.58,
+  "floorRate": 0.9729,
+  "spaceRate": 0.5878
+ },
+ {
+  "scenario": "rooms",
+  "estimator": "centroid",
+  "filter": "kalman",
+  "sigma": 8,
+  "median": 2.77,
+  "p90": 6.7,
+  "floorRate": 1,
+  "spaceRate": 0.4171
+ },
+ {
+  "scenario": "walk",
+  "estimator": "trilateration",
+  "filter": "kalman",
+  "sigma": 2,
+  "median": 1.97,
+  "p90": 3.15,
+  "floorRate": 0.9763,
+  "spaceRate": 0.7296
+ },
+ {
+  "scenario": "rooms",
+  "estimator": "trilateration",
+  "filter": "kalman",
+  "sigma": 2,
+  "median": 1.21,
+  "p90": 2.97,
+  "floorRate": 1,
+  "spaceRate": 0.8534
+ },
+ {
+  "scenario": "walk",
+  "estimator": "trilateration",
+  "filter": "kalman",
+  "sigma": 4,
+  "median": 2.61,
+  "p90": 4.97,
+  "floorRate": 0.977,
+  "spaceRate": 0.5465
+ },
+ {
+  "scenario": "rooms",
+  "estimator": "trilateration",
+  "filter": "kalman",
+  "sigma": 4,
+  "median": 2.56,
+  "p90": 5.66,
+  "floorRate": 1,
+  "spaceRate": 0.5358
+ },
+ {
+  "scenario": "walk",
+  "estimator": "trilateration",
+  "filter": "kalman",
+  "sigma": 6,
+  "median": 3.45,
+  "p90": 7.13,
+  "floorRate": 0.9749,
+  "spaceRate": 0.4227
+ },
+ {
+  "scenario": "rooms",
+  "estimator": "trilateration",
+  "filter": "kalman",
+  "sigma": 6,
+  "median": 3.86,
+  "p90": 8.41,
+  "floorRate": 1,
+  "spaceRate": 0.3543
+ },
+ {
+  "scenario": "walk",
+  "estimator": "trilateration",
+  "filter": "kalman",
+  "sigma": 8,
+  "median": 4.75,
+  "p90": 10.14,
+  "floorRate": 0.9729,
+  "spaceRate": 0.3352
+ },
+ {
+  "scenario": "rooms",
+  "estimator": "trilateration",
+  "filter": "kalman",
+  "sigma": 8,
+  "median": 5.93,
+  "p90": 13.97,
+  "floorRate": 1,
+  "spaceRate": 0.199
+ },
+ {
+  "scenario": "walk",
+  "estimator": "proximity",
+  "filter": "ema",
+  "sigma": 4,
+  "median": 4.56,
+  "p90": 6.98,
+  "floorRate": 0.9861,
+  "spaceRate": 0.4578
+ },
+ {
+  "scenario": "rooms",
+  "estimator": "proximity",
+  "filter": "ema",
+  "sigma": 4,
+  "median": 4.67,
+  "p90": 8.02,
+  "floorRate": 1,
+  "spaceRate": 0.2321
+ },
+ {
+  "scenario": "walk",
+  "estimator": "centroid",
+  "filter": "ema",
+  "sigma": 4,
+  "median": 2.09,
+  "p90": 4.67,
+  "floorRate": 0.9861,
+  "spaceRate": 0.6316
+ },
+ {
+  "scenario": "rooms",
+  "estimator": "centroid",
+  "filter": "ema",
+  "sigma": 4,
+  "median": 2.6,
+  "p90": 6.16,
+  "floorRate": 1,
+  "spaceRate": 0.4171
+ },
+ {
+  "scenario": "walk",
+  "estimator": "trilateration",
+  "filter": "ema",
+  "sigma": 4,
+  "median": 2.85,
+  "p90": 6.17,
+  "floorRate": 0.9861,
+  "spaceRate": 0.4647
+ },
+ {
+  "scenario": "rooms",
+  "estimator": "trilateration",
+  "filter": "ema",
+  "sigma": 4,
+  "median": 3.41,
+  "p90": 7.88,
+  "floorRate": 1,
+  "spaceRate": 0.3752
+ },
+ {
+  "scenario": "walk",
+  "estimator": "proximity",
+  "filter": "none",
+  "sigma": 4,
+  "median": 4.93,
+  "p90": 9,
+  "floorRate": 0.9932,
+  "spaceRate": 0.4145
+ },
+ {
+  "scenario": "rooms",
+  "estimator": "proximity",
+  "filter": "none",
+  "sigma": 4,
+  "median": 4.96,
+  "p90": 9.67,
+  "floorRate": 1,
+  "spaceRate": 0.2321
+ },
+ {
+  "scenario": "walk",
+  "estimator": "centroid",
+  "filter": "none",
+  "sigma": 4,
+  "median": 2.93,
+  "p90": 6.29,
+  "floorRate": 0.9932,
+  "spaceRate": 0.5084
+ },
+ {
+  "scenario": "rooms",
+  "estimator": "centroid",
+  "filter": "none",
+  "sigma": 4,
+  "median": 3.3,
+  "p90": 8.02,
+  "floorRate": 1,
+  "spaceRate": 0.3578
+ },
+ {
+  "scenario": "walk",
+  "estimator": "trilateration",
+  "filter": "none",
+  "sigma": 4,
+  "median": 6.78,
+  "p90": 17.23,
+  "floorRate": 0.9932,
+  "spaceRate": 0.2289
+ },
+ {
+  "scenario": "rooms",
+  "estimator": "trilateration",
+  "filter": "none",
+  "sigma": 4,
+  "median": 8.35,
+  "p90": 20.3,
+  "floorRate": 1,
+  "spaceRate": 0.1187
+ }
+]
