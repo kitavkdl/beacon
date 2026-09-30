@@ -1,0 +1,5 @@
+node_modules
+dist
+.vercel
+# Floor-plan images are © Mitchell | Giurgola; fetch them per docs/FLOORPLAN_TRACING.md
+docs/floorplans/
