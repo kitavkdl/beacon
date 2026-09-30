@@ -1,6 +1,6 @@
 // Stacked NCS floors. Each floor group is rotated -90° about X, so polygons are drawn in venue (x, y)
 // and "up" is local +z; world position is (x, elevation, -y).
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import type { Category, Floor, Polygon, Venue } from '../data/schema';
 import { pointInPolygon } from '../engine/geometry';
@@ -73,6 +73,11 @@ function FloorMesh({ floor, opacity }: { floor: Floor; opacity: number }) {
     const walls = wallGeometry(floor.outline, WALL_H);
     return { slab, spaces, lines, voidLines, walls };
   }, [floor]);
+  // Geometries passed via the geometry prop are not disposed by r3f; floors unmount/remount as the focus changes.
+  useEffect(
+    () => () => [g.slab, g.lines, g.voidLines, g.walls, ...g.spaces.map((s) => s.geo)].forEach((x) => x.dispose()),
+    [g],
+  );
 
   const faded = opacity < 1;
   return (

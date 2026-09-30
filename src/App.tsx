@@ -52,15 +52,17 @@ export default function App() {
   const [frame, setFrame] = useState<Frame>(EMPTY);
   const [trail, setTrail] = useState<Fix[]>([]);
 
-  const locator = useRef(new Locator(NCS, { estimator: 'centroid', filter: 'kalman' }));
-  const sim = useRef(new RadioSim(NCS, { sigma: 4 }));
+  const [locator] = useState(() => new Locator(NCS, { estimator: 'centroid', filter: 'kalman' }));
+  const [sim] = useState(() => new RadioSim(NCS, { sigma: 4 }));
   const simMs = useRef(0);
   const buffer = useRef<Reading[]>([]);
   const stopScan = useRef<(() => void) | null>(null);
+  /** Bumped by stopLive, so a scan whose permission prompt resolves after leaving Live mode is stopped at once. */
+  const scanGen = useRef(0);
 
-  useEffect(() => locator.current.setOptions({ estimator, filter }), [estimator, filter]);
+  useEffect(() => locator.setOptions({ estimator, filter }), [estimator, filter]);
   useEffect(() => {
-    sim.current.sigma = sigma;
+    sim.sigma = sigma;
   }, [sigma]);
 
   const push = useCallback((f: Frame) => {
@@ -71,16 +73,19 @@ export default function App() {
   useEffect(() => {
     if (mode === 'sim' && paused) return;
     const id = setInterval(() => {
-      const loc = locator.current;
+      const loc = locator;
       if (mode === 'sim') {
         // Several 250 ms scans per tick at higher speed, so the radio rate per simulated second stays the same.
+        // locate() runs every scan too, because floor hysteresis counts locate() calls.
         let truth: Pose = tourPose(simMs.current / 1000);
+        let fix: Fix | null = null;
         for (let i = 0; i < speed; i++) {
           simMs.current += TICK_MS;
           truth = tourPose(simMs.current / 1000);
-          loc.ingest(sim.current.sample(truth, simMs.current));
+          loc.ingest(sim.sample(truth, simMs.current));
+          fix = loc.locate(simMs.current);
         }
-        push({ started: true, truth, fix: loc.locate(simMs.current), heard: loc.heardBeacons(simMs.current) });
+        push({ started: true, truth, fix, heard: loc.heardBeacons(simMs.current) });
       } else {
         loc.ingest(buffer.current.splice(0));
         const now = performance.now();
@@ -88,9 +93,10 @@ export default function App() {
       }
     }, TICK_MS);
     return () => clearInterval(id);
-  }, [mode, paused, speed, push]);
+  }, [mode, paused, speed, push, locator, sim]);
 
   const stopLive = useCallback(() => {
+    scanGen.current++;
     stopScan.current?.();
     stopScan.current = null;
     buffer.current = [];
@@ -100,7 +106,7 @@ export default function App() {
   const changeMode = (m: Mode) => {
     if (m === mode) return;
     stopLive();
-    locator.current.reset();
+    locator.reset();
     setTrail([]);
     setFrame(EMPTY);
     const support = liveSupport();
@@ -109,18 +115,21 @@ export default function App() {
   };
 
   const beginScan = async () => {
+    const gen = scanGen.current;
     setLive({ status: 'starting' });
     try {
-      stopScan.current = await startScan(NCS.eddystoneNamespace, (r) => buffer.current.push(r));
+      const stop = await startScan(NCS.eddystoneNamespace, (r) => buffer.current.push(r));
+      if (gen !== scanGen.current) return stop();
+      stopScan.current = stop;
       setLive({ status: 'scanning' });
     } catch (e) {
-      setLive({ status: 'error', reason: e instanceof Error ? e.message : String(e) });
+      if (gen === scanGen.current) setLive({ status: 'error', reason: e instanceof Error ? e.message : String(e) });
     }
   };
 
   const restart = () => {
     simMs.current = 0;
-    locator.current.reset();
+    locator.reset();
     setTrail([]);
     setFrame(EMPTY);
   };
