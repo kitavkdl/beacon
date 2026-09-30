@@ -1,6 +1,6 @@
 # SBU Beacon Nav Implementation Plan
 
-> **Status 2026-09-30:** Tasks 1–2 done, Task 3 data done. Continue from docs/HANDOFF.md §5.
+> **Status 2026-09-30:** Tasks 1–6 done. Task 7: docs and review done; deploy waits on the owner (docs/HANDOFF.md §8).
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -46,19 +46,19 @@
 ### Task 3: Trace NCS (M1)
 **Files:** `scripts/trace-ncs.mjs` (pixel rectangles + calibration → `src/data/ncs.json` and overlay SVGs), `src/data/ncs.json`, `src/data/venue.ts` (typed loader), `src/data/venue.test.ts`, `docs/FLOORPLAN_TRACING.md`.
 - [x] Trace floor 1, check overlay, then floors 2–3 + beacons (data done: `scripts/trace-ncs.mjs` → `src/data/ncs.json`).
-- [ ] Remaining: `src/data/venue.ts`, `venue.test.ts`, `docs/FLOORPLAN_TRACING.md` (see docs/HANDOFF.md §5). Tests: every space inside its floor outline, ids unique, beacons on existing floors, no name matches `/\b\d{3,4}[A-Z]?\b/` (room-number guard). Commit.
+- [x] Remaining: `src/data/venue.ts`, `venue.test.ts`, `docs/FLOORPLAN_TRACING.md` (see docs/HANDOFF.md §5). Tests: every space inside its floor outline, ids unique, beacons on existing floors, no name matches `/\b\d{3,4}[A-Z]?\b/` (room-number guard). Commit.
 
 ### Task 4: Tour + integration test + bench
 **Files:** `src/data/tour.ts`, `src/engine/integration.test.ts`, `scripts/bench.ts`, `docs/benchmark-sim.md`.
-- [ ] Tour walks entrance → atrium → floors 2, 3 via stairs. Integration: centroid+kalman median error < 6 m, floor accuracy > 90% at σ = 4 dB (seeded). Bench prints the markdown table. Commit.
+- [x] Tour walks entrance → atrium → floors 2, 3 via stairs. Integration: centroid+kalman median error < 6 m, floor accuracy > 90% at σ = 4 dB (seeded). Bench prints the markdown table. Commit.
 
 ### Task 5: 3D scene + panel + app loop (M3, M4)
 **Files:** `src/scene/{Building,Markers}.tsx`, `src/ui/Panel.tsx`, `src/App.tsx`, `src/styles.css`.
-- [ ] 250 ms loop: sim.sample → locator.ingest → locate → state. Floor focus, labels for current space, "simulated" label on errors. Manual check in browser. Commit.
+- [x] 250 ms loop: sim.sample → locator.ingest → locate → state. Floor focus, labels for current space, "simulated" label on errors. Manual check in browser. Commit.
 
 ### Task 6: Live BLE (M5)
 **Files:** `src/live/eddystone.ts` (+ test), `src/live/scanner.ts`.
-- [ ] Parser test with a known frame; scanner feature-detects `navigator.bluetooth.requestLEScan`; panel shows reason when unavailable. Commit.
+- [x] Parser test with a known frame; scanner feature-detects `navigator.bluetooth.requestLEScan`; panel shows reason when unavailable. Commit.
 
 ### Task 7: Docs, review, deploy (M6)
 - [ ] CLAUDE.md, RESEARCH.md (from owner), README; whole-branch review subagent; `npm run build`; report before push/deploy; deploy.
