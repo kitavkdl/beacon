@@ -1,18 +1,20 @@
-// End to end on the real NCS venue: seeded radio sim -> Kalman -> weighted centroid -> floor + space.
+// End to end on every real venue: seeded radio sim -> Kalman -> weighted centroid -> floor + space.
 import { describe, expect, it } from 'vitest';
-import { TOUR_SECONDS, tourPose } from '../data/tour';
 import { NCS } from '../data/venue';
+import { VENUES } from '../data/venues';
 import { polygonCentroid, pointInPolygon } from './geometry';
 import { score, standAt, walk } from './evaluate';
 import type { Pose } from './simulator';
 
 const DEFAULT = { estimator: 'centroid', filter: 'kalman', sigma: 4, seed: 7 } as const;
 
-describe('NCS simulated walk (sigma 4 dB, centroid + Kalman)', () => {
-  const s = walk(NCS, tourPose, TOUR_SECONDS, DEFAULT);
+const CASES = VENUES.map((e) => [e.venue.id, e] as const);
+
+describe.each(CASES)('%s simulated walk (sigma 4 dB, centroid + Kalman)', (_id, { venue, tour }) => {
+  const s = walk(venue, tour.poseAt, tour.seconds, DEFAULT);
 
   it('fixes on almost every tick', () => {
-    expect(s.fixes).toBeGreaterThan(0.99 * (TOUR_SECONDS * 4));
+    expect(s.fixes).toBeGreaterThan(0.99 * (tour.seconds * 4));
   });
 
   it('has median error under 6 m', () => {
@@ -24,15 +26,15 @@ describe('NCS simulated walk (sigma 4 dB, centroid + Kalman)', () => {
   });
 });
 
-describe('NCS standing still in rooms', () => {
+describe.each(CASES)('%s standing still in rooms', (_id, { venue }) => {
   it('lands on the right floor in most rooms (centroids of all spaces, 5 s each)', () => {
-    const spots: Pose[] = NCS.floors.flatMap((f) =>
+    const spots: Pose[] = venue.floors.flatMap((f) =>
       f.spaces
         .map((sp) => ({ floor: f.level, sp, c: polygonCentroid(sp.polygon) }))
         .filter(({ sp, c }) => pointInPolygon(c, sp.polygon))
         .map(({ floor, c }) => ({ floor, x: c[0], y: c[1] })),
     );
-    const s = standAt(NCS, spots, 5, DEFAULT);
+    const s = standAt(venue, spots, 5, DEFAULT);
     expect(s.fixes).toBe(spots.length);
     expect(s.floorRate).toBeGreaterThan(0.9);
   });

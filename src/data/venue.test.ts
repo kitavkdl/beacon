@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { pointInPolygon } from '../engine/geometry';
 import type { Polygon, Vec2 } from './schema';
-import { NCS } from './venue';
+import { VENUES } from './venues';
 
 // Traces follow wall centrelines, so shared edges sit exactly on the outline.
 const TOL = 0.3;
@@ -19,24 +19,25 @@ function nearOrInside(p: Vec2, polys: Polygon[]): boolean {
   );
 }
 
-describe('NCS venue data', () => {
-  it('has three floors in ascending elevation', () => {
-    expect(NCS.floors.map((f) => f.level)).toEqual([1, 2, 3]);
-    for (let i = 1; i < NCS.floors.length; i++) expect(NCS.floors[i].elevation).toBeGreaterThan(NCS.floors[i - 1].elevation);
+describe.each(VENUES.map((e) => [e.venue.id, e.venue] as const))('%s venue data', (_id, V) => {
+  it('has consecutive floors in ascending elevation', () => {
+    const levels = V.floors.map((f) => f.level);
+    expect(levels).toEqual(levels.map((_, i) => levels[0] + i));
+    for (let i = 1; i < V.floors.length; i++) expect(V.floors[i].elevation).toBeGreaterThan(V.floors[i - 1].elevation);
   });
 
   it('has unique space and beacon ids', () => {
-    const spaceIds = NCS.floors.flatMap((f) => f.spaces.map((s) => s.id));
+    const spaceIds = V.floors.flatMap((f) => f.spaces.map((s) => s.id));
     expect(new Set(spaceIds).size).toBe(spaceIds.length);
-    const beaconIds = NCS.beacons.map((b) => b.id);
+    const beaconIds = V.beacons.map((b) => b.id);
     expect(new Set(beaconIds).size).toBe(beaconIds.length);
     for (const id of beaconIds) expect(id).toMatch(/^[0-9a-f]{12}$/);
-    expect(NCS.eddystoneNamespace).toMatch(/^[0-9a-f]{20}$/);
+    expect(V.eddystoneNamespace).toMatch(/^[0-9a-f]{20}$/);
   });
 
   it('puts every beacon on an existing floor, inside its outline', () => {
-    for (const b of NCS.beacons) {
-      const floor = NCS.floors.find((f) => f.level === b.floor);
+    for (const b of V.beacons) {
+      const floor = V.floors.find((f) => f.level === b.floor);
       expect(floor, b.id).toBeDefined();
       expect(nearOrInside([b.x, b.y], floor!.outline), b.id).toBe(true);
     }
@@ -44,16 +45,16 @@ describe('NCS venue data', () => {
 
   it('keeps every space vertex inside its floor outline', () => {
     const bad: string[] = [];
-    for (const f of NCS.floors)
+    for (const f of V.floors)
       for (const s of f.spaces) for (const p of s.polygon) if (!nearOrInside(p, f.outline)) bad.push(`${s.id} ${p}`);
     expect(bad).toEqual([]);
   });
 
   it('keeps every void inside its floor outline', () => {
-    for (const f of NCS.floors) for (const v of f.voids) for (const p of v) expect(nearOrInside(p, f.outline)).toBe(true);
+    for (const f of V.floors) for (const v of f.voids) for (const p of v) expect(nearOrInside(p, f.outline)).toBe(true);
   });
 
-  it('never uses room numbers in names (the plan has none)', () => {
-    for (const f of NCS.floors) for (const s of f.spaces) expect(s.name).not.toMatch(/\b\d{3,4}[A-Z]?\b/);
+  it('never uses room numbers in names (the plans have none)', () => {
+    for (const f of V.floors) for (const s of f.spaces) expect(s.name).not.toMatch(/\b\d{3,4}[A-Z]?\b/);
   });
 });
