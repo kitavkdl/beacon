@@ -19,6 +19,13 @@ export interface Fix {
   used: number;
 }
 
+export interface HeardBeacon {
+  beaconId: string;
+  floor: number;
+  /** Filtered RSSI, dBm. */
+  rssi: number;
+}
+
 export interface LocatorOptions {
   estimator: EstimatorKind;
   filter: FilterKind;
@@ -47,8 +54,21 @@ export class Locator {
   }
 
   setOptions(o: Partial<LocatorOptions>): void {
-    if (o.filter !== undefined && o.filter !== this.opts.filter) this.heard.clear();
+    // New filter kind: restart each beacon's filter from its current value, so the next locate() still has a fix.
+    if (o.filter !== undefined && o.filter !== this.opts.filter)
+      for (const h of this.heard.values()) {
+        h.filter = makeFilter(o.filter);
+        h.rssi = h.filter.update(h.rssi);
+      }
     this.opts = { ...this.opts, ...o };
+  }
+
+  /** Fresh beacons, strongest first. */
+  heardBeacons(now: number): HeardBeacon[] {
+    return [...this.heard]
+      .filter(([, h]) => now - h.t <= STALE_MS)
+      .map(([id, h]) => ({ beaconId: id, floor: this.beacons.get(id)!.floor, rssi: h.rssi }))
+      .sort((a, b) => b.rssi - a.rssi);
   }
 
   reset(): void {
