@@ -1,5 +1,7 @@
 # SBU Beacon Nav Implementation Plan
 
+> **Status 2026-09-30:** Tasks 1–2 done, Task 3 data done. Continue from docs/HANDOFF.md §5.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Ship a static web demo that locates a (simulated or live-BLE) user inside the NCS building and renders it in 3D.
@@ -28,7 +30,7 @@
 ### Task 1: Scaffold + schema
 **Files:** `package.json`, `tsconfig.json`, `vite.config.ts`, `index.html`, `src/main.tsx`, `src/data/schema.ts`, `.gitignore`
 **Produces:** types `Vec2 = [number, number]`, `Polygon = Vec2[]`, `Category`, `Space {id,name,category,polygon}`, `Floor {level,name,elevation,height,outline: Polygon[],voids: Polygon[],spaces}`, `Beacon {id,floor,x,y,txPower}`, `Venue {id,name,source,eddystoneNamespace,floors,beacons}`.
-- [ ] `npm create`-equivalent by hand, install deps, `npm run build` passes on an empty App. Commit.
+- [x] `npm create`-equivalent by hand, install deps, `npm run build` passes on an empty App. Commit.
 
 ### Task 2: Engine (subagent)
 **Files:** `src/engine/{geometry,pathLoss,filters,estimators,locator,simulator}.ts` + `*.test.ts` next to each.
@@ -39,11 +41,12 @@
 - `estimators.ts`: `interface Anchor {x,y,rssi,txPower}`, `type EstimatorKind = 'proximity'|'centroid'|'trilateration'`, `estimate(kind, anchors): Vec2 | null`.
 - `locator.ts`: `interface Reading {beaconId: string; rssi: number; t: number}`, `interface Fix {floor: number; x: number; y: number; spaceId: string|null; spaceName: string|null; used: number}`, `class Locator(venue, {estimator, filter})` with `ingest(readings)`, `locate(now): Fix|null`, `setOptions(partial)`, `reset()`.
 - `simulator.ts`: `mulberry32(seed)`, `interface Pose {floor; x; y}`, `class RadioSim(venue, {seed, sigma, dropRate, slabDb, atriumSlabDb})` with `sample(pose, t): Reading[]` and a mutable `sigma`.
-- [ ] Tests first for each module (Review Focus 1–5 included), then implementation, `npm test` green. Commit.
+- [x] Tests first for each module (Review Focus 1–5 included), then implementation, `npm test` green. Commit.
 
 ### Task 3: Trace NCS (M1)
 **Files:** `scripts/trace-ncs.mjs` (pixel rectangles + calibration → `src/data/ncs.json` and overlay SVGs), `src/data/ncs.json`, `src/data/venue.ts` (typed loader), `src/data/venue.test.ts`, `docs/FLOORPLAN_TRACING.md`.
-- [ ] Trace floor 1, check overlay, then floors 2–3 + beacons. Tests: every space inside its floor outline, ids unique, beacons on existing floors, no name matches `/\b\d{3,4}[A-Z]?\b/` (room-number guard). Commit.
+- [x] Trace floor 1, check overlay, then floors 2–3 + beacons (data done: `scripts/trace-ncs.mjs` → `src/data/ncs.json`).
+- [ ] Remaining: `src/data/venue.ts`, `venue.test.ts`, `docs/FLOORPLAN_TRACING.md` (see docs/HANDOFF.md §5). Tests: every space inside its floor outline, ids unique, beacons on existing floors, no name matches `/\b\d{3,4}[A-Z]?\b/` (room-number guard). Commit.
 
 ### Task 4: Tour + integration test + bench
 **Files:** `src/data/tour.ts`, `src/engine/integration.test.ts`, `scripts/bench.ts`, `docs/benchmark-sim.md`.

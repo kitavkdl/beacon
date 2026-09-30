@@ -1,0 +1,5285 @@
+{
+ "id": "ncs",
+ "name": "New Computer Science Building",
+ "source": "Traced from the official floor plans (Mitchell | Giurgola Architects, 2015) published at stonybrook.edu/commcms/csbuilding. See docs/FLOORPLAN_TRACING.md.",
+ "eddystoneNamespace": "53425542454143304e31",
+ "floors": [
+  {
+   "level": 1,
+   "name": "Floor 1",
+   "elevation": 0,
+   "height": 4.3,
+   "outline": [
+    [
+     [
+      1.76,
+      73.83
+     ],
+     [
+      10.3,
+      73.83
+     ],
+     [
+      10.3,
+      76.2
+     ],
+     [
+      16.14,
+      77.31
+     ],
+     [
+      26.72,
+      78.79
+     ],
+     [
+      26.72,
+      21.65
+     ],
+     [
+      22.43,
+      21.65
+     ],
+     [
+      22.43,
+      19.29
+     ],
+     [
+      50.97,
+      19.29
+     ],
+     [
+      49.87,
+      12.4
+     ],
+     [
+      49.04,
+      12.4
+     ],
+     [
+      49.04,
+      6.89
+     ],
+     [
+      45.18,
+      6.89
+     ],
+     [
+      45.18,
+      3.31
+     ],
+     [
+      21.76,
+      3.31
+     ],
+     [
+      21.76,
+      0
+     ],
+     [
+      15.98,
+      0
+     ],
+     [
+      15.98,
+      3.31
+     ],
+     [
+      0,
+      3.31
+     ],
+     [
+      0,
+      18.9
+     ],
+     [
+      1.76,
+      18.9
+     ]
+    ]
+   ],
+   "voids": [],
+   "spaces": [
+    {
+     "id": "f1-stair-northwest-1",
+     "name": "Stair (northwest)",
+     "category": "stairs",
+     "polygon": [
+      [
+       10.3,
+       76.2
+      ],
+      [
+       16.14,
+       77.31
+      ],
+      [
+       16.14,
+       73.01
+      ],
+      [
+       10.3,
+       73.01
+      ]
+     ]
+    },
+    {
+     "id": "f1-conf-room-1",
+     "name": "Conf. Room",
+     "category": "conferenceroom",
+     "polygon": [
+      [
+       16.81,
+       77.42
+      ],
+      [
+       20.22,
+       77.91
+      ],
+      [
+       20.22,
+       73.56
+      ],
+      [
+       16.81,
+       73.56
+      ]
+     ]
+    },
+    {
+     "id": "f1-ris-off-1",
+     "name": "RIS Off.",
+     "category": "office",
+     "polygon": [
+      [
+       20.22,
+       77.91
+      ],
+      [
+       23.42,
+       78.35
+      ],
+      [
+       23.42,
+       73.56
+      ],
+      [
+       20.22,
+       73.56
+      ]
+     ]
+    },
+    {
+     "id": "f1-ris-off-2",
+     "name": "RIS Off.",
+     "category": "office",
+     "polygon": [
+      [
+       23.42,
+       78.35
+      ],
+      [
+       26.72,
+       78.79
+      ],
+      [
+       26.72,
+       73.56
+      ],
+      [
+       23.42,
+       73.56
+      ]
+     ]
+    },
+    {
+     "id": "f1-north-lobby-1",
+     "name": "North lobby",
+     "category": "walkway",
+     "polygon": [
+      [
+       10.3,
+       73.01
+      ],
+      [
+       16.14,
+       73.01
+      ],
+      [
+       16.14,
+       73.56
+      ],
+      [
+       26.72,
+       73.56
+      ],
+      [
+       26.72,
+       70.36
+      ],
+      [
+       15.43,
+       70.36
+      ],
+      [
+       15.43,
+       71.91
+      ],
+      [
+       10.3,
+       71.91
+      ]
+     ]
+    },
+    {
+     "id": "f1-stair-west-1",
+     "name": "Stair (west)",
+     "category": "stairs",
+     "polygon": [
+      [
+       1.76,
+       73.56
+      ],
+      [
+       3.42,
+       73.56
+      ],
+      [
+       3.42,
+       65.84
+      ],
+      [
+       1.76,
+       65.84
+      ]
+     ]
+    },
+    {
+     "id": "f1-sya-equip-stor-1",
+     "name": "SYA Equip. Stor.",
+     "category": "storage",
+     "polygon": [
+      [
+       3.42,
+       73.56
+      ],
+      [
+       7.71,
+       73.56
+      ],
+      [
+       7.71,
+       65.84
+      ],
+      [
+       3.42,
+       65.84
+      ]
+     ]
+    },
+    {
+     "id": "f1-lobby-stor-1",
+     "name": "Lobby Stor.",
+     "category": "storage",
+     "polygon": [
+      [
+       7.71,
+       72.73
+      ],
+      [
+       10.3,
+       72.73
+      ],
+      [
+       10.3,
+       65.84
+      ],
+      [
+       7.71,
+       65.84
+      ]
+     ]
+    },
+    {
+     "id": "f1-restrooms-1",
+     "name": "Restrooms",
+     "category": "restroom",
+     "polygon": [
+      [
+       10.3,
+       71.91
+      ],
+      [
+       15.43,
+       71.91
+      ],
+      [
+       15.43,
+       64.36
+      ],
+      [
+       10.3,
+       64.36
+      ]
+     ]
+    },
+    {
+     "id": "f1-elec-clo-1",
+     "name": "Elec. Clo.",
+     "category": "mechanical",
+     "polygon": [
+      [
+       10.3,
+       64.36
+      ],
+      [
+       15.43,
+       64.36
+      ],
+      [
+       15.43,
+       61.71
+      ],
+      [
+       10.3,
+       61.71
+      ]
+     ]
+    },
+    {
+     "id": "f1-rvi-stor-1",
+     "name": "RVI Stor.",
+     "category": "storage",
+     "polygon": [
+      [
+       10.3,
+       61.71
+      ],
+      [
+       12.95,
+       61.71
+      ],
+      [
+       12.95,
+       58.13
+      ],
+      [
+       10.3,
+       58.13
+      ]
+     ]
+    },
+    {
+     "id": "f1-pantry-1",
+     "name": "Pantry",
+     "category": "kitchen",
+     "polygon": [
+      [
+       12.95,
+       61.71
+      ],
+      [
+       15.43,
+       61.71
+      ],
+      [
+       15.43,
+       58.13
+      ],
+      [
+       12.95,
+       58.13
+      ]
+     ]
+    },
+    {
+     "id": "f1-rvi-digital-med-grad-labs-rvg-graphics-labs-1",
+     "name": "RVI Digital Med./Grad Labs, RVG Graphics Labs",
+     "category": "laboratory",
+     "polygon": [
+      [
+       1.93,
+       65.84
+      ],
+      [
+       10.3,
+       65.84
+      ],
+      [
+       10.3,
+       58.41
+      ],
+      [
+       1.93,
+       58.41
+      ]
+     ]
+    },
+    {
+     "id": "f1-west-corridor-1",
+     "name": "West corridor",
+     "category": "walkway",
+     "polygon": [
+      [
+       1.93,
+       58.41
+      ],
+      [
+       15.43,
+       58.41
+      ],
+      [
+       15.43,
+       56.64
+      ],
+      [
+       1.93,
+       56.64
+      ]
+     ]
+    },
+    {
+     "id": "f1-rvi-grad-labs-1",
+     "name": "RVI Grad Labs",
+     "category": "laboratory",
+     "polygon": [
+      [
+       1.93,
+       56.64
+      ],
+      [
+       9.26,
+       56.64
+      ],
+      [
+       9.26,
+       47.55
+      ],
+      [
+       1.93,
+       47.55
+      ]
+     ]
+    },
+    {
+     "id": "f1-rvi-grad-labs-2",
+     "name": "RVI Grad Labs",
+     "category": "laboratory",
+     "polygon": [
+      [
+       1.93,
+       47.55
+      ],
+      [
+       9.26,
+       47.55
+      ],
+      [
+       9.26,
+       38.46
+      ],
+      [
+       1.93,
+       38.46
+      ]
+     ]
+    },
+    {
+     "id": "f1-rvg-grad-labs-1",
+     "name": "RVG Grad Labs",
+     "category": "laboratory",
+     "polygon": [
+      [
+       1.93,
+       38.46
+      ],
+      [
+       9.26,
+       38.46
+      ],
+      [
+       9.26,
+       29.2
+      ],
+      [
+       1.93,
+       29.2
+      ]
+     ]
+    },
+    {
+     "id": "f1-grad-labs-south-bay-1",
+     "name": "Grad labs (south bay)",
+     "category": "laboratory",
+     "polygon": [
+      [
+       1.93,
+       29.2
+      ],
+      [
+       15.43,
+       29.2
+      ],
+      [
+       15.43,
+       24.24
+      ],
+      [
+       12.78,
+       24.24
+      ],
+      [
+       12.78,
+       21.65
+      ],
+      [
+       1.93,
+       21.65
+      ]
+     ]
+    },
+    {
+     "id": "f1-elevator-1",
+     "name": "Elevator",
+     "category": "elevator",
+     "polygon": [
+      [
+       12.78,
+       24.24
+      ],
+      [
+       15.43,
+       24.24
+      ],
+      [
+       15.43,
+       21.65
+      ],
+      [
+       12.78,
+       21.65
+      ]
+     ]
+    },
+    {
+     "id": "f1-lab-passage-1",
+     "name": "Lab passage",
+     "category": "walkway",
+     "polygon": [
+      [
+       9.26,
+       56.64
+      ],
+      [
+       15.43,
+       56.64
+      ],
+      [
+       15.43,
+       55.27
+      ],
+      [
+       9.26,
+       55.27
+      ]
+     ]
+    },
+    {
+     "id": "f1-rvg-3d-modeling-1",
+     "name": "RVG 3D Modeling",
+     "category": "laboratory",
+     "polygon": [
+      [
+       9.26,
+       55.27
+      ],
+      [
+       15.43,
+       55.27
+      ],
+      [
+       15.43,
+       51.24
+      ],
+      [
+       9.26,
+       51.24
+      ]
+     ]
+    },
+    {
+     "id": "f1-rvi-light-dome-lab-1",
+     "name": "RVI Light Dome Lab",
+     "category": "laboratory",
+     "polygon": [
+      [
+       9.26,
+       51.24
+      ],
+      [
+       15.43,
+       51.24
+      ],
+      [
+       15.43,
+       45.46
+      ],
+      [
+       9.26,
+       45.46
+      ]
+     ]
+    },
+    {
+     "id": "f1-sya-mach-room-1",
+     "name": "SYA Mach. Room",
+     "category": "mechanical",
+     "polygon": [
+      [
+       9.26,
+       45.46
+      ],
+      [
+       15.43,
+       45.46
+      ],
+      [
+       15.43,
+       42.32
+      ],
+      [
+       9.26,
+       42.32
+      ]
+     ]
+    },
+    {
+     "id": "f1-cent-ups-rm-1",
+     "name": "Cent. UPS Rm.",
+     "category": "mechanical",
+     "polygon": [
+      [
+       9.26,
+       42.32
+      ],
+      [
+       15.43,
+       42.32
+      ],
+      [
+       15.43,
+       39.67
+      ],
+      [
+       9.26,
+       39.67
+      ]
+     ]
+    },
+    {
+     "id": "f1-lab-passage-2",
+     "name": "Lab passage",
+     "category": "walkway",
+     "polygon": [
+      [
+       9.26,
+       39.67
+      ],
+      [
+       15.43,
+       39.67
+      ],
+      [
+       15.43,
+       36.92
+      ],
+      [
+       9.26,
+       36.92
+      ]
+     ]
+    },
+    {
+     "id": "f1-rvg-virtual-env-ts-lab-1",
+     "name": "RVG Virtual Env'ts Lab",
+     "category": "laboratory",
+     "polygon": [
+      [
+       9.26,
+       36.92
+      ],
+      [
+       15.43,
+       36.92
+      ],
+      [
+       15.43,
+       29.2
+      ],
+      [
+       9.26,
+       29.2
+      ]
+     ]
+    },
+    {
+     "id": "f1-atrium-main-hall-1",
+     "name": "Atrium (main hall)",
+     "category": "walkway",
+     "polygon": [
+      [
+       15.43,
+       70.36
+      ],
+      [
+       22.04,
+       70.36
+      ],
+      [
+       22.04,
+       3.31
+      ],
+      [
+       15.43,
+       3.31
+      ]
+     ]
+    },
+    {
+     "id": "f1-ris-off-3",
+     "name": "RIS Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       70.36
+      ],
+      [
+       26.56,
+       70.36
+      ],
+      [
+       26.56,
+       67.39
+      ],
+      [
+       22.04,
+       67.39
+      ]
+     ]
+    },
+    {
+     "id": "f1-ris-off-4",
+     "name": "RIS Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       67.39
+      ],
+      [
+       26.56,
+       67.39
+      ],
+      [
+       26.56,
+       64.3
+      ],
+      [
+       22.04,
+       64.3
+      ]
+     ]
+    },
+    {
+     "id": "f1-ris-off-5",
+     "name": "RIS Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       64.3
+      ],
+      [
+       26.56,
+       64.3
+      ],
+      [
+       26.56,
+       61.27
+      ],
+      [
+       22.04,
+       61.27
+      ]
+     ]
+    },
+    {
+     "id": "f1-ris-p-doc-off-1",
+     "name": "RIS P.Doc Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       61.27
+      ],
+      [
+       26.56,
+       61.27
+      ],
+      [
+       26.56,
+       58.13
+      ],
+      [
+       22.04,
+       58.13
+      ]
+     ]
+    },
+    {
+     "id": "f1-meeting-nook-1",
+     "name": "Meeting nook",
+     "category": "lounge",
+     "polygon": [
+      [
+       22.04,
+       58.13
+      ],
+      [
+       26.56,
+       58.13
+      ],
+      [
+       26.56,
+       55.21
+      ],
+      [
+       22.04,
+       55.21
+      ]
+     ]
+    },
+    {
+     "id": "f1-ris-p-doc-off-2",
+     "name": "RIS P.Doc Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       55.21
+      ],
+      [
+       26.56,
+       55.21
+      ],
+      [
+       26.56,
+       52.12
+      ],
+      [
+       22.04,
+       52.12
+      ]
+     ]
+    },
+    {
+     "id": "f1-rvg-off-1",
+     "name": "RVG Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       52.12
+      ],
+      [
+       26.56,
+       52.12
+      ],
+      [
+       26.56,
+       49.09
+      ],
+      [
+       22.04,
+       49.09
+      ]
+     ]
+    },
+    {
+     "id": "f1-rvg-off-2",
+     "name": "RVG Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       49.09
+      ],
+      [
+       26.56,
+       49.09
+      ],
+      [
+       26.56,
+       46.01
+      ],
+      [
+       22.04,
+       46.01
+      ]
+     ]
+    },
+    {
+     "id": "f1-rvg-off-3",
+     "name": "RVG Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       46.01
+      ],
+      [
+       26.56,
+       46.01
+      ],
+      [
+       26.56,
+       42.92
+      ],
+      [
+       22.04,
+       42.92
+      ]
+     ]
+    },
+    {
+     "id": "f1-rvg-p-doc-off-1",
+     "name": "RVG P.Doc Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       42.92
+      ],
+      [
+       26.56,
+       42.92
+      ],
+      [
+       26.56,
+       39.78
+      ],
+      [
+       22.04,
+       39.78
+      ]
+     ]
+    },
+    {
+     "id": "f1-meeting-nook-2",
+     "name": "Meeting nook",
+     "category": "lounge",
+     "polygon": [
+      [
+       22.04,
+       39.78
+      ],
+      [
+       26.56,
+       39.78
+      ],
+      [
+       26.56,
+       36.86
+      ],
+      [
+       22.04,
+       36.86
+      ]
+     ]
+    },
+    {
+     "id": "f1-rvg-p-doc-off-2",
+     "name": "RVG P.Doc Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       36.86
+      ],
+      [
+       26.56,
+       36.86
+      ],
+      [
+       26.56,
+       33.78
+      ],
+      [
+       22.04,
+       33.78
+      ]
+     ]
+    },
+    {
+     "id": "f1-rvi-off-fut-1",
+     "name": "RVI Off. Fut.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       33.78
+      ],
+      [
+       26.56,
+       33.78
+      ],
+      [
+       26.56,
+       30.75
+      ],
+      [
+       22.04,
+       30.75
+      ]
+     ]
+    },
+    {
+     "id": "f1-rvi-off-1",
+     "name": "RVI Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       30.75
+      ],
+      [
+       26.56,
+       30.75
+      ],
+      [
+       26.56,
+       27.66
+      ],
+      [
+       22.04,
+       27.66
+      ]
+     ]
+    },
+    {
+     "id": "f1-rvi-off-2",
+     "name": "RVI Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       27.66
+      ],
+      [
+       26.56,
+       27.66
+      ],
+      [
+       26.56,
+       24.57
+      ],
+      [
+       22.04,
+       24.57
+      ]
+     ]
+    },
+    {
+     "id": "f1-rvi-off-3",
+     "name": "RVI Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       24.57
+      ],
+      [
+       26.56,
+       24.57
+      ],
+      [
+       26.56,
+       21.65
+      ],
+      [
+       22.04,
+       21.65
+      ]
+     ]
+    },
+    {
+     "id": "f1-stair-south-1",
+     "name": "Stair (south)",
+     "category": "stairs",
+     "polygon": [
+      [
+       5.23,
+       21.49
+      ],
+      [
+       12.4,
+       21.49
+      ],
+      [
+       12.4,
+       18.9
+      ],
+      [
+       5.23,
+       18.9
+      ]
+     ]
+    },
+    {
+     "id": "f1-wireless-teaching-lab-1",
+     "name": "Wireless Teaching Lab",
+     "category": "classroom",
+     "polygon": [
+      [
+       0,
+       18.9
+      ],
+      [
+       15.43,
+       18.9
+      ],
+      [
+       15.43,
+       3.31
+      ],
+      [
+       0,
+       3.31
+      ]
+     ]
+    },
+    {
+     "id": "f1-main-entrance-1",
+     "name": "Main entrance",
+     "category": "walkway",
+     "polygon": [
+      [
+       15.98,
+       3.31
+      ],
+      [
+       21.76,
+       3.31
+      ],
+      [
+       21.76,
+       0
+      ],
+      [
+       15.98,
+       0
+      ]
+     ]
+    },
+    {
+     "id": "f1-ung-teaching-lab-1",
+     "name": "UNG Teaching Lab",
+     "category": "classroom",
+     "polygon": [
+      [
+       22.04,
+       18.9
+      ],
+      [
+       31.41,
+       18.9
+      ],
+      [
+       31.41,
+       9.92
+      ],
+      [
+       22.04,
+       9.92
+      ]
+     ]
+    },
+    {
+     "id": "f1-ung-grd-comp-prac-lab-1",
+     "name": "UNG/GRD Comp. Prac. Lab",
+     "category": "laboratory",
+     "polygon": [
+      [
+       31.41,
+       18.9
+      ],
+      [
+       41.33,
+       18.9
+      ],
+      [
+       41.33,
+       12.95
+      ],
+      [
+       31.41,
+       12.95
+      ]
+     ]
+    },
+    {
+     "id": "f1-restrooms-2",
+     "name": "Restrooms",
+     "category": "restroom",
+     "polygon": [
+      [
+       31.41,
+       12.95
+      ],
+      [
+       39.67,
+       12.95
+      ],
+      [
+       39.67,
+       9.64
+      ],
+      [
+       31.41,
+       9.64
+      ]
+     ]
+    },
+    {
+     "id": "f1-ung-grd-student-workspace-1",
+     "name": "UNG/GRD Student Workspace",
+     "category": "workroom",
+     "polygon": [
+      [
+       41.33,
+       19.29
+      ],
+      [
+       50.97,
+       19.29
+      ],
+      [
+       49.87,
+       12.4
+      ],
+      [
+       41.33,
+       12.4
+      ]
+     ]
+    },
+    {
+     "id": "f1-east-corridor-1",
+     "name": "East corridor",
+     "category": "walkway",
+     "polygon": [
+      [
+       22.04,
+       9.64
+      ],
+      [
+       39.67,
+       9.64
+      ],
+      [
+       39.67,
+       12.4
+      ],
+      [
+       46.01,
+       12.4
+      ],
+      [
+       46.01,
+       7.16
+      ],
+      [
+       22.04,
+       7.16
+      ]
+     ]
+    },
+    {
+     "id": "f1-stair-east-1",
+     "name": "Stair (east)",
+     "category": "stairs",
+     "polygon": [
+      [
+       46.01,
+       12.4
+      ],
+      [
+       49.04,
+       12.4
+      ],
+      [
+       49.04,
+       6.89
+      ],
+      [
+       46.01,
+       6.89
+      ]
+     ]
+    },
+    {
+     "id": "f1-ung-adm-1",
+     "name": "UNG Adm.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       7.16
+      ],
+      [
+       25.07,
+       7.16
+      ],
+      [
+       25.07,
+       3.31
+      ],
+      [
+       22.04,
+       3.31
+      ]
+     ]
+    },
+    {
+     "id": "f1-grd-adm-1",
+     "name": "GRD Adm.",
+     "category": "office",
+     "polygon": [
+      [
+       25.07,
+       7.16
+      ],
+      [
+       28.38,
+       7.16
+      ],
+      [
+       28.38,
+       3.31
+      ],
+      [
+       25.07,
+       3.31
+      ]
+     ]
+    },
+    {
+     "id": "f1-ung-copy-1",
+     "name": "UNG Copy",
+     "category": "office",
+     "polygon": [
+      [
+       28.38,
+       7.16
+      ],
+      [
+       31.63,
+       7.16
+      ],
+      [
+       31.63,
+       3.31
+      ],
+      [
+       28.38,
+       3.31
+      ]
+     ]
+    },
+    {
+     "id": "f1-visitor-off-1",
+     "name": "Visitor Off.",
+     "category": "office",
+     "polygon": [
+      [
+       31.63,
+       7.16
+      ],
+      [
+       34.6,
+       7.16
+      ],
+      [
+       34.6,
+       3.31
+      ],
+      [
+       31.63,
+       3.31
+      ]
+     ]
+    },
+    {
+     "id": "f1-visitor-off-2",
+     "name": "Visitor Off.",
+     "category": "office",
+     "polygon": [
+      [
+       34.6,
+       7.16
+      ],
+      [
+       37.63,
+       7.16
+      ],
+      [
+       37.63,
+       3.31
+      ],
+      [
+       34.6,
+       3.31
+      ]
+     ]
+    },
+    {
+     "id": "f1-conference-room-1",
+     "name": "Conference Room",
+     "category": "conferenceroom",
+     "polygon": [
+      [
+       37.63,
+       7.16
+      ],
+      [
+       44.63,
+       7.16
+      ],
+      [
+       44.63,
+       3.31
+      ],
+      [
+       37.63,
+       3.31
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "level": 2,
+   "name": "Floor 2",
+   "elevation": 4.3,
+   "height": 4.3,
+   "outline": [
+    [
+     [
+      1.57,
+      78.16
+     ],
+     [
+      10.96,
+      78.16
+     ],
+     [
+      10.96,
+      76.78
+     ],
+     [
+      16.8,
+      77.89
+     ],
+     [
+      26.8,
+      79.27
+     ],
+     [
+      26.8,
+      21.49
+     ],
+     [
+      22.36,
+      21.49
+     ],
+     [
+      22.36,
+      19.33
+     ],
+     [
+      51.54,
+      19.33
+     ],
+     [
+      50.76,
+      14.79
+     ],
+     [
+      50.54,
+      13.96
+     ],
+     [
+      49.59,
+      13.41
+     ],
+     [
+      49.59,
+      6.21
+     ],
+     [
+      45.15,
+      6.21
+     ],
+     [
+      45.15,
+      3.17
+     ],
+     [
+      22.08,
+      3.17
+     ],
+     [
+      22.08,
+      0.12
+     ],
+     [
+      14.85,
+      0.12
+     ],
+     [
+      14.85,
+      6.21
+     ],
+     [
+      5.68,
+      6.21
+     ],
+     [
+      5.68,
+      21.49
+     ],
+     [
+      1.57,
+      21.49
+     ]
+    ]
+   ],
+   "voids": [
+    [
+     [
+      17.19,
+      71.63
+     ],
+     [
+      20.19,
+      71.63
+     ],
+     [
+      20.19,
+      57.68
+     ],
+     [
+      17.19,
+      57.68
+     ]
+    ],
+    [
+     [
+      17.19,
+      55.75
+     ],
+     [
+      20.19,
+      55.75
+     ],
+     [
+      20.19,
+      39.31
+     ],
+     [
+      17.19,
+      39.31
+     ]
+    ],
+    [
+     [
+      17.19,
+      37.43
+     ],
+     [
+      20.19,
+      37.43
+     ],
+     [
+      20.19,
+      23.48
+     ],
+     [
+      17.19,
+      23.48
+     ]
+    ],
+    [
+     [
+      17.19,
+      18.28
+     ],
+     [
+      20.19,
+      18.28
+     ],
+     [
+      20.19,
+      6.32
+     ],
+     [
+      17.19,
+      6.32
+     ]
+    ]
+   ],
+   "spaces": [
+    {
+     "id": "f2-sya-dir-off-1",
+     "name": "SYA Dir. Off.",
+     "category": "office",
+     "polygon": [
+      [
+       1.57,
+       78.16
+      ],
+      [
+       4.96,
+       78.16
+      ],
+      [
+       4.96,
+       73.46
+      ],
+      [
+       1.57,
+       73.46
+      ]
+     ]
+    },
+    {
+     "id": "f2-sya-off-1",
+     "name": "SYA Off.",
+     "category": "office",
+     "polygon": [
+      [
+       4.96,
+       78.16
+      ],
+      [
+       7.9,
+       78.16
+      ],
+      [
+       7.9,
+       73.46
+      ],
+      [
+       4.96,
+       73.46
+      ]
+     ]
+    },
+    {
+     "id": "f2-sya-off-2",
+     "name": "SYA Off.",
+     "category": "office",
+     "polygon": [
+      [
+       7.9,
+       78.16
+      ],
+      [
+       10.96,
+       78.16
+      ],
+      [
+       10.96,
+       73.46
+      ],
+      [
+       7.9,
+       73.46
+      ]
+     ]
+    },
+    {
+     "id": "f2-stair-northwest-1",
+     "name": "Stair (northwest)",
+     "category": "stairs",
+     "polygon": [
+      [
+       10.96,
+       76.78
+      ],
+      [
+       16.8,
+       77.89
+      ],
+      [
+       16.8,
+       73.46
+      ],
+      [
+       10.96,
+       73.46
+      ]
+     ]
+    },
+    {
+     "id": "f2-conf-room-1",
+     "name": "Conf. Room",
+     "category": "conferenceroom",
+     "polygon": [
+      [
+       16.8,
+       77.89
+      ],
+      [
+       20.41,
+       78.44
+      ],
+      [
+       20.41,
+       73.46
+      ],
+      [
+       16.8,
+       73.46
+      ]
+     ]
+    },
+    {
+     "id": "f2-grd-fac-staff-lounge-1",
+     "name": "GRD Fac./Staff Lounge",
+     "category": "lounge",
+     "polygon": [
+      [
+       20.41,
+       78.44
+      ],
+      [
+       26.8,
+       79.27
+      ],
+      [
+       26.8,
+       73.46
+      ],
+      [
+       20.41,
+       73.46
+      ]
+     ]
+    },
+    {
+     "id": "f2-north-corridor-1",
+     "name": "North corridor",
+     "category": "walkway",
+     "polygon": [
+      [
+       1.57,
+       73.46
+      ],
+      [
+       22.08,
+       73.46
+      ],
+      [
+       22.08,
+       71.96
+      ],
+      [
+       1.57,
+       71.96
+      ]
+     ]
+    },
+    {
+     "id": "f2-sya-off-3",
+     "name": "SYA Off.",
+     "category": "office",
+     "polygon": [
+      [
+       1.57,
+       71.96
+      ],
+      [
+       5.79,
+       71.96
+      ],
+      [
+       5.79,
+       69.03
+      ],
+      [
+       1.57,
+       69.03
+      ]
+     ]
+    },
+    {
+     "id": "f2-sya-off-4",
+     "name": "SYA Off.",
+     "category": "office",
+     "polygon": [
+      [
+       1.57,
+       69.03
+      ],
+      [
+       5.79,
+       69.03
+      ],
+      [
+       5.79,
+       65.88
+      ],
+      [
+       1.57,
+       65.88
+      ]
+     ]
+    },
+    {
+     "id": "f2-sya-future-1",
+     "name": "SYA Future",
+     "category": "office",
+     "polygon": [
+      [
+       1.57,
+       65.88
+      ],
+      [
+       5.79,
+       65.88
+      ],
+      [
+       5.79,
+       62.78
+      ],
+      [
+       1.57,
+       62.78
+      ]
+     ]
+    },
+    {
+     "id": "f2-sya-off-5",
+     "name": "SYA Off.",
+     "category": "office",
+     "polygon": [
+      [
+       7.07,
+       71.96
+      ],
+      [
+       11.07,
+       71.96
+      ],
+      [
+       11.07,
+       69.03
+      ],
+      [
+       7.07,
+       69.03
+      ]
+     ]
+    },
+    {
+     "id": "f2-sya-off-6",
+     "name": "SYA Off.",
+     "category": "office",
+     "polygon": [
+      [
+       7.07,
+       69.03
+      ],
+      [
+       11.07,
+       69.03
+      ],
+      [
+       11.07,
+       65.88
+      ],
+      [
+       7.07,
+       65.88
+      ]
+     ]
+    },
+    {
+     "id": "f2-west-corridor-1",
+     "name": "West corridor",
+     "category": "walkway",
+     "polygon": [
+      [
+       5.79,
+       71.96
+      ],
+      [
+       7.07,
+       71.96
+      ],
+      [
+       7.07,
+       65.88
+      ],
+      [
+       9.29,
+       65.88
+      ],
+      [
+       9.29,
+       65.05
+      ],
+      [
+       5.79,
+       65.05
+      ]
+     ]
+    },
+    {
+     "id": "f2-sya-copy-1",
+     "name": "SYA Copy",
+     "category": "workroom",
+     "polygon": [
+      [
+       5.79,
+       65.05
+      ],
+      [
+       9.29,
+       65.05
+      ],
+      [
+       9.29,
+       62.78
+      ],
+      [
+       5.79,
+       62.78
+      ]
+     ]
+    },
+    {
+     "id": "f2-ris-sound-booths-1",
+     "name": "RIS Sound Booths",
+     "category": "laboratory",
+     "polygon": [
+      [
+       9.29,
+       65.05
+      ],
+      [
+       12.07,
+       65.05
+      ],
+      [
+       12.07,
+       58.24
+      ],
+      [
+       9.29,
+       58.24
+      ]
+     ]
+    },
+    {
+     "id": "f2-restrooms-1",
+     "name": "Restrooms",
+     "category": "restroom",
+     "polygon": [
+      [
+       11.07,
+       71.8
+      ],
+      [
+       15.3,
+       71.8
+      ],
+      [
+       15.3,
+       64.33
+      ],
+      [
+       11.07,
+       64.33
+      ]
+     ]
+    },
+    {
+     "id": "f2-elec-1",
+     "name": "Elec.",
+     "category": "mechanical",
+     "polygon": [
+      [
+       12.07,
+       64.33
+      ],
+      [
+       15.3,
+       64.33
+      ],
+      [
+       15.3,
+       61.28
+      ],
+      [
+       12.07,
+       61.28
+      ]
+     ]
+    },
+    {
+     "id": "f2-elevator-1",
+     "name": "Elevator",
+     "category": "elevator",
+     "polygon": [
+      [
+       12.18,
+       60.73
+      ],
+      [
+       15.3,
+       60.73
+      ],
+      [
+       15.3,
+       58.24
+      ],
+      [
+       12.18,
+       58.24
+      ]
+     ]
+    },
+    {
+     "id": "f2-ris-grad-labs-1",
+     "name": "RIS Grad Labs",
+     "category": "laboratory",
+     "polygon": [
+      [
+       1.57,
+       62.78
+      ],
+      [
+       9.29,
+       62.78
+      ],
+      [
+       9.29,
+       56.69
+      ],
+      [
+       1.57,
+       56.69
+      ]
+     ]
+    },
+    {
+     "id": "f2-ris-grad-labs-2",
+     "name": "RIS Grad Labs",
+     "category": "laboratory",
+     "polygon": [
+      [
+       1.57,
+       56.69
+      ],
+      [
+       9.29,
+       56.69
+      ],
+      [
+       9.29,
+       47.56
+      ],
+      [
+       1.57,
+       47.56
+      ]
+     ]
+    },
+    {
+     "id": "f2-rvr-grad-labs-1",
+     "name": "RVR Grad Labs",
+     "category": "laboratory",
+     "polygon": [
+      [
+       1.57,
+       47.56
+      ],
+      [
+       9.29,
+       47.56
+      ],
+      [
+       9.29,
+       38.42
+      ],
+      [
+       1.57,
+       38.42
+      ]
+     ]
+    },
+    {
+     "id": "f2-ral-grad-labs-1",
+     "name": "RAL Grad Labs",
+     "category": "laboratory",
+     "polygon": [
+      [
+       1.57,
+       38.42
+      ],
+      [
+       9.29,
+       38.42
+      ],
+      [
+       9.29,
+       29.18
+      ],
+      [
+       1.57,
+       29.18
+      ]
+     ]
+    },
+    {
+     "id": "f2-grd-phd-workspace-1",
+     "name": "GRD PhD Workspace",
+     "category": "laboratory",
+     "polygon": [
+      [
+       1.57,
+       29.18
+      ],
+      [
+       15.3,
+       29.18
+      ],
+      [
+       15.3,
+       23.65
+      ],
+      [
+       12.63,
+       23.65
+      ],
+      [
+       12.63,
+       21.49
+      ],
+      [
+       1.57,
+       21.49
+      ]
+     ]
+    },
+    {
+     "id": "f2-elevator-2",
+     "name": "Elevator",
+     "category": "elevator",
+     "polygon": [
+      [
+       12.63,
+       23.65
+      ],
+      [
+       15.3,
+       23.65
+      ],
+      [
+       15.3,
+       21.49
+      ],
+      [
+       12.63,
+       21.49
+      ]
+     ]
+    },
+    {
+     "id": "f2-lab-passage-1",
+     "name": "Lab passage",
+     "category": "walkway",
+     "polygon": [
+      [
+       9.29,
+       58.24
+      ],
+      [
+       15.3,
+       58.24
+      ],
+      [
+       15.3,
+       55.3
+      ],
+      [
+       9.29,
+       55.3
+      ]
+     ]
+    },
+    {
+     "id": "f2-sya-work-rm-1",
+     "name": "SYA Work Rm.",
+     "category": "workroom",
+     "polygon": [
+      [
+       9.29,
+       55.3
+      ],
+      [
+       15.3,
+       55.3
+      ],
+      [
+       15.3,
+       50.49
+      ],
+      [
+       9.29,
+       50.49
+      ]
+     ]
+    },
+    {
+     "id": "f2-sya-cent-mach-rm-1",
+     "name": "SYA Cent. Mach. Rm.",
+     "category": "mechanical",
+     "polygon": [
+      [
+       9.29,
+       50.49
+      ],
+      [
+       15.3,
+       50.49
+      ],
+      [
+       15.3,
+       39.97
+      ],
+      [
+       9.29,
+       39.97
+      ]
+     ]
+    },
+    {
+     "id": "f2-lab-passage-2",
+     "name": "Lab passage",
+     "category": "walkway",
+     "polygon": [
+      [
+       9.29,
+       39.97
+      ],
+      [
+       15.3,
+       39.97
+      ],
+      [
+       15.3,
+       36.93
+      ],
+      [
+       9.29,
+       36.93
+      ]
+     ]
+    },
+    {
+     "id": "f2-ral-grad-labs-2",
+     "name": "RAL Grad Labs",
+     "category": "laboratory",
+     "polygon": [
+      [
+       9.29,
+       36.93
+      ],
+      [
+       15.3,
+       36.93
+      ],
+      [
+       15.3,
+       30.56
+      ],
+      [
+       9.29,
+       30.56
+      ]
+     ]
+    },
+    {
+     "id": "f2-lab-passage-3",
+     "name": "Lab passage",
+     "category": "walkway",
+     "polygon": [
+      [
+       9.29,
+       30.56
+      ],
+      [
+       15.3,
+       30.56
+      ],
+      [
+       15.3,
+       29.18
+      ],
+      [
+       9.29,
+       29.18
+      ]
+     ]
+    },
+    {
+     "id": "f2-atrium-gallery-west-side-1",
+     "name": "Atrium gallery (west side)",
+     "category": "walkway",
+     "polygon": [
+      [
+       15.3,
+       71.96
+      ],
+      [
+       17.19,
+       71.96
+      ],
+      [
+       17.19,
+       5.38
+      ],
+      [
+       15.3,
+       5.38
+      ]
+     ]
+    },
+    {
+     "id": "f2-atrium-gallery-east-side-1",
+     "name": "Atrium gallery (east side)",
+     "category": "walkway",
+     "polygon": [
+      [
+       20.19,
+       71.96
+      ],
+      [
+       22.08,
+       71.96
+      ],
+      [
+       22.08,
+       5.38
+      ],
+      [
+       20.19,
+       5.38
+      ]
+     ]
+    },
+    {
+     "id": "f2-atrium-bridge-1",
+     "name": "Atrium bridge",
+     "category": "walkway",
+     "polygon": [
+      [
+       17.19,
+       57.68
+      ],
+      [
+       20.19,
+       57.68
+      ],
+      [
+       20.19,
+       55.75
+      ],
+      [
+       17.19,
+       55.75
+      ]
+     ]
+    },
+    {
+     "id": "f2-atrium-bridge-2",
+     "name": "Atrium bridge",
+     "category": "walkway",
+     "polygon": [
+      [
+       17.19,
+       39.31
+      ],
+      [
+       20.19,
+       39.31
+      ],
+      [
+       20.19,
+       37.43
+      ],
+      [
+       17.19,
+       37.43
+      ]
+     ]
+    },
+    {
+     "id": "f2-atrium-bridge-3",
+     "name": "Atrium bridge",
+     "category": "walkway",
+     "polygon": [
+      [
+       17.19,
+       23.48
+      ],
+      [
+       20.19,
+       23.48
+      ],
+      [
+       20.19,
+       18.28
+      ],
+      [
+       17.19,
+       18.28
+      ]
+     ]
+    },
+    {
+     "id": "f2-south-lounge-1",
+     "name": "South lounge",
+     "category": "lounge",
+     "polygon": [
+      [
+       14.85,
+       5.38
+      ],
+      [
+       22.08,
+       5.38
+      ],
+      [
+       22.08,
+       0.12
+      ],
+      [
+       14.85,
+       0.12
+      ]
+     ]
+    },
+    {
+     "id": "f2-ris-off-1",
+     "name": "RIS Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.08,
+       73.46
+      ],
+      [
+       26.41,
+       73.46
+      ],
+      [
+       26.41,
+       70.41
+      ],
+      [
+       22.08,
+       70.41
+      ]
+     ]
+    },
+    {
+     "id": "f2-ris-off-2",
+     "name": "RIS Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.08,
+       70.41
+      ],
+      [
+       26.41,
+       70.41
+      ],
+      [
+       26.41,
+       67.37
+      ],
+      [
+       22.08,
+       67.37
+      ]
+     ]
+    },
+    {
+     "id": "f2-ris-off-fut-1",
+     "name": "RIS Off. Fut.",
+     "category": "office",
+     "polygon": [
+      [
+       22.08,
+       67.37
+      ],
+      [
+       26.41,
+       67.37
+      ],
+      [
+       26.41,
+       64.33
+      ],
+      [
+       22.08,
+       64.33
+      ]
+     ]
+    },
+    {
+     "id": "f2-rvr-off-1",
+     "name": "RVR Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.08,
+       64.33
+      ],
+      [
+       26.41,
+       64.33
+      ],
+      [
+       26.41,
+       61.28
+      ],
+      [
+       22.08,
+       61.28
+      ]
+     ]
+    },
+    {
+     "id": "f2-rvr-p-doc-off-1",
+     "name": "RVR P.Doc Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.08,
+       61.28
+      ],
+      [
+       26.41,
+       61.28
+      ],
+      [
+       26.41,
+       58.13
+      ],
+      [
+       22.08,
+       58.13
+      ]
+     ]
+    },
+    {
+     "id": "f2-meeting-nook-1",
+     "name": "Meeting nook",
+     "category": "lounge",
+     "polygon": [
+      [
+       22.08,
+       58.13
+      ],
+      [
+       26.41,
+       58.13
+      ],
+      [
+       26.41,
+       55.19
+      ],
+      [
+       22.08,
+       55.19
+      ]
+     ]
+    },
+    {
+     "id": "f2-rvr-p-doc-off-2",
+     "name": "RVR P.Doc Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.08,
+       55.19
+      ],
+      [
+       26.41,
+       55.19
+      ],
+      [
+       26.41,
+       52.15
+      ],
+      [
+       22.08,
+       52.15
+      ]
+     ]
+    },
+    {
+     "id": "f2-rvr-off-2",
+     "name": "RVR Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.08,
+       52.15
+      ],
+      [
+       26.41,
+       52.15
+      ],
+      [
+       26.41,
+       49.05
+      ],
+      [
+       22.08,
+       49.05
+      ]
+     ]
+    },
+    {
+     "id": "f2-rvr-off-3",
+     "name": "RVR Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.08,
+       49.05
+      ],
+      [
+       26.41,
+       49.05
+      ],
+      [
+       26.41,
+       46.01
+      ],
+      [
+       22.08,
+       46.01
+      ]
+     ]
+    },
+    {
+     "id": "f2-rvr-off-4",
+     "name": "RVR Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.08,
+       46.01
+      ],
+      [
+       26.41,
+       46.01
+      ],
+      [
+       26.41,
+       42.96
+      ],
+      [
+       22.08,
+       42.96
+      ]
+     ]
+    },
+    {
+     "id": "f2-ral-p-doc-off-1",
+     "name": "RAL P.Doc Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.08,
+       42.96
+      ],
+      [
+       26.41,
+       42.96
+      ],
+      [
+       26.41,
+       39.92
+      ],
+      [
+       22.08,
+       39.92
+      ]
+     ]
+    },
+    {
+     "id": "f2-meeting-nook-2",
+     "name": "Meeting nook",
+     "category": "lounge",
+     "polygon": [
+      [
+       22.08,
+       39.92
+      ],
+      [
+       26.41,
+       39.92
+      ],
+      [
+       26.41,
+       36.87
+      ],
+      [
+       22.08,
+       36.87
+      ]
+     ]
+    },
+    {
+     "id": "f2-ral-p-doc-off-2",
+     "name": "RAL P.Doc Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.08,
+       36.87
+      ],
+      [
+       26.41,
+       36.87
+      ],
+      [
+       26.41,
+       33.77
+      ],
+      [
+       22.08,
+       33.77
+      ]
+     ]
+    },
+    {
+     "id": "f2-ral-off-1",
+     "name": "RAL Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.08,
+       33.77
+      ],
+      [
+       26.41,
+       33.77
+      ],
+      [
+       26.41,
+       30.73
+      ],
+      [
+       22.08,
+       30.73
+      ]
+     ]
+    },
+    {
+     "id": "f2-ral-off-2",
+     "name": "RAL Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.08,
+       30.73
+      ],
+      [
+       26.41,
+       30.73
+      ],
+      [
+       26.41,
+       27.69
+      ],
+      [
+       22.08,
+       27.69
+      ]
+     ]
+    },
+    {
+     "id": "f2-ral-off-3",
+     "name": "RAL Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.08,
+       27.69
+      ],
+      [
+       26.41,
+       27.69
+      ],
+      [
+       26.41,
+       24.64
+      ],
+      [
+       22.08,
+       24.64
+      ]
+     ]
+    },
+    {
+     "id": "f2-ral-off-4",
+     "name": "RAL Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.08,
+       24.64
+      ],
+      [
+       26.41,
+       24.64
+      ],
+      [
+       26.41,
+       21.49
+      ],
+      [
+       22.08,
+       21.49
+      ]
+     ]
+    },
+    {
+     "id": "f2-stair-south-1",
+     "name": "Stair (south)",
+     "category": "stairs",
+     "polygon": [
+      [
+       5.68,
+       21.49
+      ],
+      [
+       12.63,
+       21.49
+      ],
+      [
+       12.63,
+       19.22
+      ],
+      [
+       5.68,
+       19.22
+      ]
+     ]
+    },
+    {
+     "id": "f2-pantry-1",
+     "name": "Pantry",
+     "category": "kitchen",
+     "polygon": [
+      [
+       12.35,
+       19.22
+      ],
+      [
+       15.13,
+       19.22
+      ],
+      [
+       15.13,
+       16.73
+      ],
+      [
+       12.35,
+       16.73
+      ]
+     ]
+    },
+    {
+     "id": "f2-adm-work-rm-1",
+     "name": "ADM Work Rm.",
+     "category": "workroom",
+     "polygon": [
+      [
+       5.68,
+       19.22
+      ],
+      [
+       12.35,
+       19.22
+      ],
+      [
+       12.35,
+       16.73
+      ],
+      [
+       15.13,
+       16.73
+      ],
+      [
+       15.13,
+       14.51
+      ],
+      [
+       5.68,
+       14.51
+      ]
+     ]
+    },
+    {
+     "id": "f2-conference-room-1",
+     "name": "Conference Room",
+     "category": "conferenceroom",
+     "polygon": [
+      [
+       5.68,
+       14.51
+      ],
+      [
+       15.13,
+       14.51
+      ],
+      [
+       15.13,
+       6.21
+      ],
+      [
+       5.68,
+       6.21
+      ]
+     ]
+    },
+    {
+     "id": "f2-ung-off-1",
+     "name": "UNG Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.36,
+       19.22
+      ],
+      [
+       25.58,
+       19.22
+      ],
+      [
+       25.58,
+       14.79
+      ],
+      [
+       22.36,
+       14.79
+      ]
+     ]
+    },
+    {
+     "id": "f2-ung-off-2",
+     "name": "UNG Off.",
+     "category": "office",
+     "polygon": [
+      [
+       25.58,
+       19.22
+      ],
+      [
+       28.58,
+       19.22
+      ],
+      [
+       28.58,
+       14.79
+      ],
+      [
+       25.58,
+       14.79
+      ]
+     ]
+    },
+    {
+     "id": "f2-ung-off-3",
+     "name": "UNG Off.",
+     "category": "office",
+     "polygon": [
+      [
+       28.58,
+       19.22
+      ],
+      [
+       31.64,
+       19.22
+      ],
+      [
+       31.64,
+       14.79
+      ],
+      [
+       28.58,
+       14.79
+      ]
+     ]
+    },
+    {
+     "id": "f2-ung-off-4",
+     "name": "UNG Off.",
+     "category": "office",
+     "polygon": [
+      [
+       31.64,
+       19.22
+      ],
+      [
+       34.7,
+       19.22
+      ],
+      [
+       34.7,
+       14.79
+      ],
+      [
+       31.64,
+       14.79
+      ]
+     ]
+    },
+    {
+     "id": "f2-ung-off-5",
+     "name": "UNG Off.",
+     "category": "office",
+     "polygon": [
+      [
+       34.7,
+       19.22
+      ],
+      [
+       37.75,
+       19.22
+      ],
+      [
+       37.75,
+       14.79
+      ],
+      [
+       34.7,
+       14.79
+      ]
+     ]
+    },
+    {
+     "id": "f2-ung-off-6",
+     "name": "UNG Off.",
+     "category": "office",
+     "polygon": [
+      [
+       37.75,
+       19.22
+      ],
+      [
+       40.76,
+       19.22
+      ],
+      [
+       40.76,
+       14.79
+      ],
+      [
+       37.75,
+       14.79
+      ]
+     ]
+    },
+    {
+     "id": "f2-ung-off-7",
+     "name": "UNG Off.",
+     "category": "office",
+     "polygon": [
+      [
+       40.76,
+       19.22
+      ],
+      [
+       43.81,
+       19.22
+      ],
+      [
+       43.81,
+       14.79
+      ],
+      [
+       40.76,
+       14.79
+      ]
+     ]
+    },
+    {
+     "id": "f2-ung-off-8",
+     "name": "UNG Off.",
+     "category": "office",
+     "polygon": [
+      [
+       43.81,
+       19.22
+      ],
+      [
+       46.87,
+       19.22
+      ],
+      [
+       46.87,
+       14.79
+      ],
+      [
+       43.81,
+       14.79
+      ]
+     ]
+    },
+    {
+     "id": "f2-ung-dir-off-1",
+     "name": "UNG Dir. Off.",
+     "category": "office",
+     "polygon": [
+      [
+       46.87,
+       19.22
+      ],
+      [
+       51.54,
+       19.33
+      ],
+      [
+       50.76,
+       14.79
+      ],
+      [
+       46.87,
+       14.79
+      ]
+     ]
+    },
+    {
+     "id": "f2-east-corridor-north-1",
+     "name": "East corridor (north)",
+     "category": "walkway",
+     "polygon": [
+      [
+       22.36,
+       14.79
+      ],
+      [
+       46.26,
+       14.79
+      ],
+      [
+       46.26,
+       13.13
+      ],
+      [
+       22.36,
+       13.13
+      ]
+     ]
+    },
+    {
+     "id": "f2-adm-file-1",
+     "name": "ADM File",
+     "category": "storage",
+     "polygon": [
+      [
+       22.36,
+       13.13
+      ],
+      [
+       24.86,
+       13.13
+      ],
+      [
+       24.86,
+       8.42
+      ],
+      [
+       22.36,
+       8.42
+      ]
+     ]
+    },
+    {
+     "id": "f2-adm-mail-copy-1",
+     "name": "ADM Mail/Copy",
+     "category": "workroom",
+     "polygon": [
+      [
+       24.86,
+       13.13
+      ],
+      [
+       28.75,
+       13.13
+      ],
+      [
+       28.75,
+       8.42
+      ],
+      [
+       24.86,
+       8.42
+      ]
+     ]
+    },
+    {
+     "id": "f2-restrooms-2",
+     "name": "Restrooms",
+     "category": "restroom",
+     "polygon": [
+      [
+       28.75,
+       13.13
+      ],
+      [
+       37.64,
+       13.13
+      ],
+      [
+       37.64,
+       8.42
+      ],
+      [
+       28.75,
+       8.42
+      ]
+     ]
+    },
+    {
+     "id": "f2-adm-conf-a-1",
+     "name": "ADM Conf. A",
+     "category": "conferenceroom",
+     "polygon": [
+      [
+       37.64,
+       13.13
+      ],
+      [
+       43.2,
+       13.13
+      ],
+      [
+       43.2,
+       8.42
+      ],
+      [
+       37.64,
+       8.42
+      ]
+     ]
+    },
+    {
+     "id": "f2-tel-elec-1",
+     "name": "Tel./Elec.",
+     "category": "mechanical",
+     "polygon": [
+      [
+       43.2,
+       13.13
+      ],
+      [
+       46.26,
+       13.13
+      ],
+      [
+       46.26,
+       8.42
+      ],
+      [
+       43.2,
+       8.42
+      ]
+     ]
+    },
+    {
+     "id": "f2-stair-east-1",
+     "name": "Stair (east)",
+     "category": "stairs",
+     "polygon": [
+      [
+       46.26,
+       13.41
+      ],
+      [
+       49.59,
+       13.41
+      ],
+      [
+       49.59,
+       6.21
+      ],
+      [
+       46.26,
+       6.21
+      ]
+     ]
+    },
+    {
+     "id": "f2-east-corridor-south-1",
+     "name": "East corridor (south)",
+     "category": "walkway",
+     "polygon": [
+      [
+       22.36,
+       8.42
+      ],
+      [
+       46.26,
+       8.42
+      ],
+      [
+       46.26,
+       7.32
+      ],
+      [
+       22.36,
+       7.32
+      ]
+     ]
+    },
+    {
+     "id": "f2-adm-off-1",
+     "name": "ADM Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.36,
+       7.32
+      ],
+      [
+       25.64,
+       7.32
+      ],
+      [
+       25.64,
+       3.17
+      ],
+      [
+       22.36,
+       3.17
+      ]
+     ]
+    },
+    {
+     "id": "f2-adm-off-2",
+     "name": "ADM Off.",
+     "category": "office",
+     "polygon": [
+      [
+       25.64,
+       7.32
+      ],
+      [
+       28.64,
+       7.32
+      ],
+      [
+       28.64,
+       3.17
+      ],
+      [
+       25.64,
+       3.17
+      ]
+     ]
+    },
+    {
+     "id": "f2-adm-off-3",
+     "name": "ADM Off.",
+     "category": "office",
+     "polygon": [
+      [
+       28.64,
+       7.32
+      ],
+      [
+       31.64,
+       7.32
+      ],
+      [
+       31.64,
+       3.17
+      ],
+      [
+       28.64,
+       3.17
+      ]
+     ]
+    },
+    {
+     "id": "f2-adm-off-4",
+     "name": "ADM Off.",
+     "category": "office",
+     "polygon": [
+      [
+       31.64,
+       7.32
+      ],
+      [
+       34.7,
+       7.32
+      ],
+      [
+       34.7,
+       3.17
+      ],
+      [
+       31.64,
+       3.17
+      ]
+     ]
+    },
+    {
+     "id": "f2-adm-off-5",
+     "name": "ADM Off.",
+     "category": "office",
+     "polygon": [
+      [
+       34.7,
+       7.32
+      ],
+      [
+       37.75,
+       7.32
+      ],
+      [
+       37.75,
+       3.17
+      ],
+      [
+       34.7,
+       3.17
+      ]
+     ]
+    },
+    {
+     "id": "f2-adm-off-6",
+     "name": "ADM Off.",
+     "category": "office",
+     "polygon": [
+      [
+       37.75,
+       7.32
+      ],
+      [
+       40.81,
+       7.32
+      ],
+      [
+       40.81,
+       3.17
+      ],
+      [
+       37.75,
+       3.17
+      ]
+     ]
+    },
+    {
+     "id": "f2-adm-chair-s-off-1",
+     "name": "ADM Chair's Off.",
+     "category": "office",
+     "polygon": [
+      [
+       40.81,
+       7.32
+      ],
+      [
+       45.15,
+       7.32
+      ],
+      [
+       45.15,
+       3.17
+      ],
+      [
+       40.81,
+       3.17
+      ]
+     ]
+    }
+   ]
+  },
+  {
+   "level": 3,
+   "name": "Floor 3",
+   "elevation": 8.6,
+   "height": 4.3,
+   "outline": [
+    [
+     [
+      1.55,
+      77.99
+     ],
+     [
+      11.17,
+      77.99
+     ],
+     [
+      11.17,
+      76.64
+     ],
+     [
+      16.88,
+      77.56
+     ],
+     [
+      26.65,
+      78.96
+     ],
+     [
+      26.6,
+      21.48
+     ],
+     [
+      12.53,
+      21.48
+     ],
+     [
+      12.53,
+      18.99
+     ],
+     [
+      5.47,
+      18.99
+     ],
+     [
+      5.47,
+      21.48
+     ],
+     [
+      1.55,
+      21.48
+     ]
+    ],
+    [
+     [
+      27.74,
+      16.29
+     ],
+     [
+      46.21,
+      16.29
+     ],
+     [
+      46.21,
+      13.04
+     ],
+     [
+      49.47,
+      13.04
+     ],
+     [
+      49.47,
+      6
+     ],
+     [
+      46.21,
+      6
+     ],
+     [
+      46.21,
+      7.09
+     ],
+     [
+      27.74,
+      7.09
+     ]
+    ]
+   ],
+   "voids": [
+    [
+     [
+      17.2,
+      71.6
+     ],
+     [
+      20.24,
+      71.6
+     ],
+     [
+      20.24,
+      57.64
+     ],
+     [
+      17.2,
+      57.64
+     ]
+    ],
+    [
+     [
+      17.2,
+      55.74
+     ],
+     [
+      20.24,
+      55.74
+     ],
+     [
+      20.24,
+      39.34
+     ],
+     [
+      17.2,
+      39.34
+     ]
+    ],
+    [
+     [
+      17.2,
+      37.4
+     ],
+     [
+      20.24,
+      37.4
+     ],
+     [
+      20.24,
+      23.49
+     ],
+     [
+      17.2,
+      23.49
+     ]
+    ]
+   ],
+   "spaces": [
+    {
+     "id": "f3-rwm-off-1",
+     "name": "RWM Off.",
+     "category": "office",
+     "polygon": [
+      [
+       1.55,
+       77.99
+      ],
+      [
+       4.92,
+       77.99
+      ],
+      [
+       4.92,
+       73.66
+      ],
+      [
+       1.55,
+       73.66
+      ]
+     ]
+    },
+    {
+     "id": "f3-rwm-off-2",
+     "name": "RWM Off.",
+     "category": "office",
+     "polygon": [
+      [
+       4.92,
+       77.99
+      ],
+      [
+       8.02,
+       77.99
+      ],
+      [
+       8.02,
+       73.66
+      ],
+      [
+       4.92,
+       73.66
+      ]
+     ]
+    },
+    {
+     "id": "f3-rwm-off-3",
+     "name": "RWM Off.",
+     "category": "office",
+     "polygon": [
+      [
+       8.02,
+       77.99
+      ],
+      [
+       11.17,
+       77.99
+      ],
+      [
+       11.17,
+       73.66
+      ],
+      [
+       8.02,
+       73.66
+      ]
+     ]
+    },
+    {
+     "id": "f3-stair-northwest-1",
+     "name": "Stair (northwest)",
+     "category": "stairs",
+     "polygon": [
+      [
+       11.17,
+       76.64
+      ],
+      [
+       16.88,
+       77.56
+      ],
+      [
+       16.88,
+       73.66
+      ],
+      [
+       11.17,
+       73.66
+      ]
+     ]
+    },
+    {
+     "id": "f3-conf-room-1",
+     "name": "Conf. Room",
+     "category": "conferenceroom",
+     "polygon": [
+      [
+       16.88,
+       77.56
+      ],
+      [
+       20.14,
+       78.1
+      ],
+      [
+       20.14,
+       73.66
+      ],
+      [
+       16.88,
+       73.66
+      ]
+     ]
+    },
+    {
+     "id": "f3-grd-stud-lounge-1",
+     "name": "GRD Stud. Lounge",
+     "category": "lounge",
+     "polygon": [
+      [
+       20.14,
+       78.1
+      ],
+      [
+       26.65,
+       78.96
+      ],
+      [
+       26.65,
+       73.66
+      ],
+      [
+       20.14,
+       73.66
+      ]
+     ]
+    },
+    {
+     "id": "f3-north-corridor-1",
+     "name": "North corridor",
+     "category": "walkway",
+     "polygon": [
+      [
+       1.55,
+       73.66
+      ],
+      [
+       22.04,
+       73.66
+      ],
+      [
+       22.04,
+       72.04
+      ],
+      [
+       1.55,
+       72.04
+      ]
+     ]
+    },
+    {
+     "id": "f3-rwm-off-4",
+     "name": "RWM Off.",
+     "category": "office",
+     "polygon": [
+      [
+       1.55,
+       72.04
+      ],
+      [
+       6.01,
+       72.04
+      ],
+      [
+       6.01,
+       68.52
+      ],
+      [
+       1.55,
+       68.52
+      ]
+     ]
+    },
+    {
+     "id": "f3-rwm-p-doc-off-1",
+     "name": "RWM P.Doc Off.",
+     "category": "office",
+     "polygon": [
+      [
+       1.55,
+       68.52
+      ],
+      [
+       6.01,
+       68.52
+      ],
+      [
+       6.01,
+       65.81
+      ],
+      [
+       1.55,
+       65.81
+      ]
+     ]
+    },
+    {
+     "id": "f3-pantry-jan-1",
+     "name": "Pantry / Jan.",
+     "category": "kitchen",
+     "polygon": [
+      [
+       6.55,
+       72.04
+      ],
+      [
+       11.17,
+       72.04
+      ],
+      [
+       11.17,
+       69.06
+      ],
+      [
+       6.55,
+       69.06
+      ]
+     ]
+    },
+    {
+     "id": "f3-rwm-p-doc-off-2",
+     "name": "RWM P.Doc Off.",
+     "category": "office",
+     "polygon": [
+      [
+       6.01,
+       69.06
+      ],
+      [
+       11.17,
+       69.06
+      ],
+      [
+       11.17,
+       65.81
+      ],
+      [
+       6.01,
+       65.81
+      ]
+     ]
+    },
+    {
+     "id": "f3-restrooms-1",
+     "name": "Restrooms",
+     "category": "restroom",
+     "polygon": [
+      [
+       11.17,
+       72.04
+      ],
+      [
+       15.41,
+       72.04
+      ],
+      [
+       15.41,
+       64.46
+      ],
+      [
+       11.17,
+       64.46
+      ]
+     ]
+    },
+    {
+     "id": "f3-elec-1",
+     "name": "Elec.",
+     "category": "mechanical",
+     "polygon": [
+      [
+       11.99,
+       64.46
+      ],
+      [
+       15.41,
+       64.46
+      ],
+      [
+       15.41,
+       61.48
+      ],
+      [
+       11.99,
+       61.48
+      ]
+     ]
+    },
+    {
+     "id": "f3-rwm-wireless-sensor-lab-1",
+     "name": "RWM Wireless Sensor Lab",
+     "category": "laboratory",
+     "polygon": [
+      [
+       9.27,
+       65.81
+      ],
+      [
+       11.17,
+       65.81
+      ],
+      [
+       11.17,
+       64.46
+      ],
+      [
+       11.99,
+       64.46
+      ],
+      [
+       11.99,
+       61.48
+      ],
+      [
+       15.41,
+       61.48
+      ],
+      [
+       15.41,
+       58.23
+      ],
+      [
+       9.27,
+       58.23
+      ]
+     ]
+    },
+    {
+     "id": "f3-rwm-grad-labs-1",
+     "name": "RWM Grad Labs",
+     "category": "laboratory",
+     "polygon": [
+      [
+       1.55,
+       65.81
+      ],
+      [
+       9.27,
+       65.81
+      ],
+      [
+       9.27,
+       56.72
+      ],
+      [
+       1.55,
+       56.72
+      ]
+     ]
+    },
+    {
+     "id": "f3-rcs-grad-labs-1",
+     "name": "RCS Grad Labs",
+     "category": "laboratory",
+     "polygon": [
+      [
+       1.55,
+       56.72
+      ],
+      [
+       9.27,
+       56.72
+      ],
+      [
+       9.27,
+       47.52
+      ],
+      [
+       1.55,
+       47.52
+      ]
+     ]
+    },
+    {
+     "id": "f3-rcs-grad-labs-2",
+     "name": "RCS Grad Labs",
+     "category": "laboratory",
+     "polygon": [
+      [
+       1.55,
+       47.52
+      ],
+      [
+       9.27,
+       47.52
+      ],
+      [
+       9.27,
+       38.37
+      ],
+      [
+       1.55,
+       38.37
+      ]
+     ]
+    },
+    {
+     "id": "f3-rcy-grad-labs-1",
+     "name": "RCY Grad Labs",
+     "category": "laboratory",
+     "polygon": [
+      [
+       1.55,
+       38.37
+      ],
+      [
+       9.27,
+       38.37
+      ],
+      [
+       9.27,
+       29.22
+      ],
+      [
+       1.55,
+       29.22
+      ]
+     ]
+    },
+    {
+     "id": "f3-grd-phd-workspace-1",
+     "name": "GRD PhD Workspace",
+     "category": "laboratory",
+     "polygon": [
+      [
+       1.55,
+       29.22
+      ],
+      [
+       15.41,
+       29.22
+      ],
+      [
+       15.41,
+       25.22
+      ],
+      [
+       12.69,
+       25.22
+      ],
+      [
+       12.69,
+       21.48
+      ],
+      [
+       1.55,
+       21.48
+      ]
+     ]
+    },
+    {
+     "id": "f3-elevator-1",
+     "name": "Elevator",
+     "category": "elevator",
+     "polygon": [
+      [
+       12.69,
+       25.22
+      ],
+      [
+       15.41,
+       25.22
+      ],
+      [
+       15.41,
+       21.48
+      ],
+      [
+       12.69,
+       21.48
+      ]
+     ]
+    },
+    {
+     "id": "f3-lab-passage-1",
+     "name": "Lab passage",
+     "category": "walkway",
+     "polygon": [
+      [
+       9.27,
+       58.23
+      ],
+      [
+       15.41,
+       58.23
+      ],
+      [
+       15.41,
+       55.26
+      ],
+      [
+       9.27,
+       55.26
+      ]
+     ]
+    },
+    {
+     "id": "f3-rvr-grad-labs-1",
+     "name": "RVR Grad Labs",
+     "category": "laboratory",
+     "polygon": [
+      [
+       9.27,
+       55.26
+      ],
+      [
+       15.41,
+       55.26
+      ],
+      [
+       15.41,
+       49.3
+      ],
+      [
+       9.27,
+       49.3
+      ]
+     ]
+    },
+    {
+     "id": "f3-rwm-grad-labs-2",
+     "name": "RWM Grad Labs",
+     "category": "laboratory",
+     "polygon": [
+      [
+       9.27,
+       49.3
+      ],
+      [
+       15.41,
+       49.3
+      ],
+      [
+       15.41,
+       44.97
+      ],
+      [
+       9.27,
+       44.97
+      ]
+     ]
+    },
+    {
+     "id": "f3-sya-machine-room-1",
+     "name": "SYA Machine Room",
+     "category": "mechanical",
+     "polygon": [
+      [
+       9.27,
+       44.97
+      ],
+      [
+       15.41,
+       44.97
+      ],
+      [
+       15.41,
+       39.83
+      ],
+      [
+       9.27,
+       39.83
+      ]
+     ]
+    },
+    {
+     "id": "f3-lab-passage-2",
+     "name": "Lab passage",
+     "category": "walkway",
+     "polygon": [
+      [
+       9.27,
+       39.83
+      ],
+      [
+       15.41,
+       39.83
+      ],
+      [
+       15.41,
+       36.96
+      ],
+      [
+       9.27,
+       36.96
+      ]
+     ]
+    },
+    {
+     "id": "f3-rcy-grad-labs-2",
+     "name": "RCY Grad Labs",
+     "category": "laboratory",
+     "polygon": [
+      [
+       9.27,
+       36.96
+      ],
+      [
+       15.41,
+       36.96
+      ],
+      [
+       15.41,
+       30.63
+      ],
+      [
+       9.27,
+       30.63
+      ]
+     ]
+    },
+    {
+     "id": "f3-lab-passage-3",
+     "name": "Lab passage",
+     "category": "walkway",
+     "polygon": [
+      [
+       9.27,
+       30.63
+      ],
+      [
+       15.41,
+       30.63
+      ],
+      [
+       15.41,
+       29.22
+      ],
+      [
+       9.27,
+       29.22
+      ]
+     ]
+    },
+    {
+     "id": "f3-atrium-gallery-west-side-1",
+     "name": "Atrium gallery (west side)",
+     "category": "walkway",
+     "polygon": [
+      [
+       15.41,
+       72.04
+      ],
+      [
+       17.2,
+       72.04
+      ],
+      [
+       17.2,
+       21.48
+      ],
+      [
+       15.41,
+       21.48
+      ]
+     ]
+    },
+    {
+     "id": "f3-atrium-gallery-east-side-1",
+     "name": "Atrium gallery (east side)",
+     "category": "walkway",
+     "polygon": [
+      [
+       20.24,
+       72.04
+      ],
+      [
+       22.04,
+       72.04
+      ],
+      [
+       22.04,
+       21.48
+      ],
+      [
+       20.24,
+       21.48
+      ]
+     ]
+    },
+    {
+     "id": "f3-atrium-bridge-1",
+     "name": "Atrium bridge",
+     "category": "walkway",
+     "polygon": [
+      [
+       17.2,
+       57.64
+      ],
+      [
+       20.24,
+       57.64
+      ],
+      [
+       20.24,
+       55.74
+      ],
+      [
+       17.2,
+       55.74
+      ]
+     ]
+    },
+    {
+     "id": "f3-atrium-bridge-2",
+     "name": "Atrium bridge",
+     "category": "walkway",
+     "polygon": [
+      [
+       17.2,
+       39.34
+      ],
+      [
+       20.24,
+       39.34
+      ],
+      [
+       20.24,
+       37.4
+      ],
+      [
+       17.2,
+       37.4
+      ]
+     ]
+    },
+    {
+     "id": "f3-atrium-gallery-south-end-1",
+     "name": "Atrium gallery (south end)",
+     "category": "walkway",
+     "polygon": [
+      [
+       17.2,
+       23.49
+      ],
+      [
+       20.24,
+       23.49
+      ],
+      [
+       20.24,
+       21.48
+      ],
+      [
+       17.2,
+       21.48
+      ]
+     ]
+    },
+    {
+     "id": "f3-rcs-p-doc-off-1",
+     "name": "RCS P.Doc Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       73.44
+      ],
+      [
+       26.49,
+       73.44
+      ],
+      [
+       26.49,
+       70.41
+      ],
+      [
+       22.04,
+       70.41
+      ]
+     ]
+    },
+    {
+     "id": "f3-rcs-off-1",
+     "name": "RCS Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       70.41
+      ],
+      [
+       26.49,
+       70.41
+      ],
+      [
+       26.49,
+       67.38
+      ],
+      [
+       22.04,
+       67.38
+      ]
+     ]
+    },
+    {
+     "id": "f3-rcs-off-2",
+     "name": "RCS Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       67.38
+      ],
+      [
+       26.49,
+       67.38
+      ],
+      [
+       26.49,
+       64.3
+      ],
+      [
+       22.04,
+       64.3
+      ]
+     ]
+    },
+    {
+     "id": "f3-rcs-off-3",
+     "name": "RCS Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       64.3
+      ],
+      [
+       26.49,
+       64.3
+      ],
+      [
+       26.49,
+       61.26
+      ],
+      [
+       22.04,
+       61.26
+      ]
+     ]
+    },
+    {
+     "id": "f3-rcs-p-doc-off-2",
+     "name": "RCS P.Doc Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       61.26
+      ],
+      [
+       26.49,
+       61.26
+      ],
+      [
+       26.49,
+       58.23
+      ],
+      [
+       22.04,
+       58.23
+      ]
+     ]
+    },
+    {
+     "id": "f3-meeting-nook-1",
+     "name": "Meeting nook",
+     "category": "lounge",
+     "polygon": [
+      [
+       22.04,
+       58.23
+      ],
+      [
+       26.49,
+       58.23
+      ],
+      [
+       26.49,
+       55.15
+      ],
+      [
+       22.04,
+       55.15
+      ]
+     ]
+    },
+    {
+     "id": "f3-rcs-off-4",
+     "name": "RCS Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       55.15
+      ],
+      [
+       26.49,
+       55.15
+      ],
+      [
+       26.49,
+       52.12
+      ],
+      [
+       22.04,
+       52.12
+      ]
+     ]
+    },
+    {
+     "id": "f3-rcs-off-5",
+     "name": "RCS Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       52.12
+      ],
+      [
+       26.49,
+       52.12
+      ],
+      [
+       26.49,
+       49.14
+      ],
+      [
+       22.04,
+       49.14
+      ]
+     ]
+    },
+    {
+     "id": "f3-rcs-off-6",
+     "name": "RCS Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       49.14
+      ],
+      [
+       26.49,
+       49.14
+      ],
+      [
+       26.49,
+       46
+      ],
+      [
+       22.04,
+       46
+      ]
+     ]
+    },
+    {
+     "id": "f3-rcy-off-1",
+     "name": "RCY Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       46
+      ],
+      [
+       26.49,
+       46
+      ],
+      [
+       26.49,
+       42.92
+      ],
+      [
+       22.04,
+       42.92
+      ]
+     ]
+    },
+    {
+     "id": "f3-rcy-p-doc-off-1",
+     "name": "RCY P.Doc Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       42.92
+      ],
+      [
+       26.49,
+       42.92
+      ],
+      [
+       26.49,
+       39.83
+      ],
+      [
+       22.04,
+       39.83
+      ]
+     ]
+    },
+    {
+     "id": "f3-meeting-nook-2",
+     "name": "Meeting nook",
+     "category": "lounge",
+     "polygon": [
+      [
+       22.04,
+       39.83
+      ],
+      [
+       26.49,
+       39.83
+      ],
+      [
+       26.49,
+       36.85
+      ],
+      [
+       22.04,
+       36.85
+      ]
+     ]
+    },
+    {
+     "id": "f3-rcy-p-doc-off-2",
+     "name": "RCY P.Doc Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       36.85
+      ],
+      [
+       26.49,
+       36.85
+      ],
+      [
+       26.49,
+       33.82
+      ],
+      [
+       22.04,
+       33.82
+      ]
+     ]
+    },
+    {
+     "id": "f3-rcy-off-2",
+     "name": "RCY Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       33.82
+      ],
+      [
+       26.49,
+       33.82
+      ],
+      [
+       26.49,
+       30.74
+      ],
+      [
+       22.04,
+       30.74
+      ]
+     ]
+    },
+    {
+     "id": "f3-rcy-off-3",
+     "name": "RCY Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       30.74
+      ],
+      [
+       26.49,
+       30.74
+      ],
+      [
+       26.49,
+       27.71
+      ],
+      [
+       22.04,
+       27.71
+      ]
+     ]
+    },
+    {
+     "id": "f3-rcy-off-4",
+     "name": "RCY Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       27.71
+      ],
+      [
+       26.49,
+       27.71
+      ],
+      [
+       26.49,
+       24.62
+      ],
+      [
+       22.04,
+       24.62
+      ]
+     ]
+    },
+    {
+     "id": "f3-rcy-off-5",
+     "name": "RCY Off.",
+     "category": "office",
+     "polygon": [
+      [
+       22.04,
+       24.62
+      ],
+      [
+       26.49,
+       24.62
+      ],
+      [
+       26.49,
+       21.48
+      ],
+      [
+       22.04,
+       21.48
+      ]
+     ]
+    },
+    {
+     "id": "f3-stair-south-1",
+     "name": "Stair (south)",
+     "category": "stairs",
+     "polygon": [
+      [
+       5.47,
+       21.48
+      ],
+      [
+       12.53,
+       21.48
+      ],
+      [
+       12.53,
+       18.99
+      ],
+      [
+       5.47,
+       18.99
+      ]
+     ]
+    },
+    {
+     "id": "f3-mech-room-b-1",
+     "name": "Mech. Room B",
+     "category": "mechanical",
+     "polygon": [
+      [
+       27.74,
+       16.29
+      ],
+      [
+       46.21,
+       16.29
+      ],
+      [
+       46.21,
+       7.09
+      ],
+      [
+       27.74,
+       7.09
+      ]
+     ]
+    },
+    {
+     "id": "f3-stair-east-1",
+     "name": "Stair (east)",
+     "category": "stairs",
+     "polygon": [
+      [
+       46.21,
+       13.04
+      ],
+      [
+       49.47,
+       13.04
+      ],
+      [
+       49.47,
+       6
+      ],
+      [
+       46.21,
+       6
+      ]
+     ]
+    }
+   ]
+  }
+ ],
+ "beacons": [
+  {
+   "id": "000000010001",
+   "floor": 1,
+   "x": 18.73,
+   "y": 70.25,
+   "txPower": -59
+  },
+  {
+   "id": "000000010002",
+   "floor": 1,
+   "x": 18.73,
+   "y": 54.27,
+   "txPower": -59
+  },
+  {
+   "id": "000000010003",
+   "floor": 1,
+   "x": 18.73,
+   "y": 38.85,
+   "txPower": -59
+  },
+  {
+   "id": "000000010004",
+   "floor": 1,
+   "x": 18.73,
+   "y": 23.42,
+   "txPower": -59
+  },
+  {
+   "id": "000000010005",
+   "floor": 1,
+   "x": 18.73,
+   "y": 6.89,
+   "txPower": -59
+  },
+  {
+   "id": "000000010006",
+   "floor": 1,
+   "x": 24.24,
+   "y": 65.84,
+   "txPower": -59
+  },
+  {
+   "id": "000000010007",
+   "floor": 1,
+   "x": 24.24,
+   "y": 47.66,
+   "txPower": -59
+  },
+  {
+   "id": "000000010008",
+   "floor": 1,
+   "x": 24.24,
+   "y": 29.2,
+   "txPower": -59
+  },
+  {
+   "id": "000000010009",
+   "floor": 1,
+   "x": 5.51,
+   "y": 61.99,
+   "txPower": -59
+  },
+  {
+   "id": "000000010010",
+   "floor": 1,
+   "x": 5.51,
+   "y": 52.07,
+   "txPower": -59
+  },
+  {
+   "id": "000000010011",
+   "floor": 1,
+   "x": 5.51,
+   "y": 33.89,
+   "txPower": -59
+  },
+  {
+   "id": "000000010012",
+   "floor": 1,
+   "x": 8.54,
+   "y": 25.62,
+   "txPower": -59
+  },
+  {
+   "id": "000000010013",
+   "floor": 1,
+   "x": 12.4,
+   "y": 48.76,
+   "txPower": -59
+  },
+  {
+   "id": "000000010014",
+   "floor": 1,
+   "x": 19.01,
+   "y": 75.49,
+   "txPower": -59
+  },
+  {
+   "id": "000000010015",
+   "floor": 1,
+   "x": 7.71,
+   "y": 11.3,
+   "txPower": -59
+  },
+  {
+   "id": "000000010016",
+   "floor": 1,
+   "x": 26.72,
+   "y": 14.6,
+   "txPower": -59
+  },
+  {
+   "id": "000000010017",
+   "floor": 1,
+   "x": 36.09,
+   "y": 8.54,
+   "txPower": -59
+  },
+  {
+   "id": "000000010018",
+   "floor": 1,
+   "x": 46.01,
+   "y": 15.7,
+   "txPower": -59
+  },
+  {
+   "id": "000000010019",
+   "floor": 1,
+   "x": 41.05,
+   "y": 5.23,
+   "txPower": -59
+  },
+  {
+   "id": "000000020001",
+   "floor": 2,
+   "x": 16.24,
+   "y": 69.31,
+   "txPower": -59
+  },
+  {
+   "id": "000000020002",
+   "floor": 2,
+   "x": 21.13,
+   "y": 52.7,
+   "txPower": -59
+  },
+  {
+   "id": "000000020003",
+   "floor": 2,
+   "x": 16.24,
+   "y": 36.1,
+   "txPower": -59
+  },
+  {
+   "id": "000000020004",
+   "floor": 2,
+   "x": 21.13,
+   "y": 19.49,
+   "txPower": -59
+  },
+  {
+   "id": "000000020005",
+   "floor": 2,
+   "x": 18.47,
+   "y": 2.89,
+   "txPower": -59
+  },
+  {
+   "id": "000000020006",
+   "floor": 2,
+   "x": 24.3,
+   "y": 65.99,
+   "txPower": -59
+  },
+  {
+   "id": "000000020007",
+   "floor": 2,
+   "x": 24.3,
+   "y": 47.72,
+   "txPower": -59
+  },
+  {
+   "id": "000000020008",
+   "floor": 2,
+   "x": 24.3,
+   "y": 29.46,
+   "txPower": -59
+  },
+  {
+   "id": "000000020009",
+   "floor": 2,
+   "x": 3.74,
+   "y": 59.9,
+   "txPower": -59
+  },
+  {
+   "id": "000000020010",
+   "floor": 2,
+   "x": 3.74,
+   "y": 52.15,
+   "txPower": -59
+  },
+  {
+   "id": "000000020011",
+   "floor": 2,
+   "x": 3.74,
+   "y": 33.88,
+   "txPower": -59
+  },
+  {
+   "id": "000000020012",
+   "floor": 2,
+   "x": 8.18,
+   "y": 25.58,
+   "txPower": -59
+  },
+  {
+   "id": "000000020013",
+   "floor": 2,
+   "x": 3.74,
+   "y": 68.2,
+   "txPower": -59
+  },
+  {
+   "id": "000000020014",
+   "floor": 2,
+   "x": 12.35,
+   "y": 46.06,
+   "txPower": -59
+  },
+  {
+   "id": "000000020015",
+   "floor": 2,
+   "x": 18.74,
+   "y": 75.4,
+   "txPower": -59
+  },
+  {
+   "id": "000000020016",
+   "floor": 2,
+   "x": 10.41,
+   "y": 10.64,
+   "txPower": -59
+  },
+  {
+   "id": "000000020017",
+   "floor": 2,
+   "x": 28.75,
+   "y": 17,
+   "txPower": -59
+  },
+  {
+   "id": "000000020018",
+   "floor": 2,
+   "x": 42.09,
+   "y": 17,
+   "txPower": -59
+  },
+  {
+   "id": "000000020019",
+   "floor": 2,
+   "x": 33.2,
+   "y": 7.87,
+   "txPower": -59
+  },
+  {
+   "id": "000000020020",
+   "floor": 2,
+   "x": 37.64,
+   "y": 5.1,
+   "txPower": -59
+  },
+  {
+   "id": "000000030001",
+   "floor": 3,
+   "x": 16.33,
+   "y": 66.08,
+   "txPower": -59
+  },
+  {
+   "id": "000000030002",
+   "floor": 3,
+   "x": 21.11,
+   "y": 49.84,
+   "txPower": -59
+  },
+  {
+   "id": "000000030003",
+   "floor": 3,
+   "x": 16.33,
+   "y": 33.61,
+   "txPower": -59
+  },
+  {
+   "id": "000000030004",
+   "floor": 3,
+   "x": 21.11,
+   "y": 22.78,
+   "txPower": -59
+  },
+  {
+   "id": "000000030005",
+   "floor": 3,
+   "x": 24.21,
+   "y": 66.08,
+   "txPower": -59
+  },
+  {
+   "id": "000000030006",
+   "floor": 3,
+   "x": 24.21,
+   "y": 47.68,
+   "txPower": -59
+  },
+  {
+   "id": "000000030007",
+   "floor": 3,
+   "x": 24.21,
+   "y": 29.28,
+   "txPower": -59
+  },
+  {
+   "id": "000000030008",
+   "floor": 3,
+   "x": 5.19,
+   "y": 61.21,
+   "txPower": -59
+  },
+  {
+   "id": "000000030009",
+   "floor": 3,
+   "x": 5.19,
+   "y": 52.01,
+   "txPower": -59
+  },
+  {
+   "id": "000000030010",
+   "floor": 3,
+   "x": 5.19,
+   "y": 33.61,
+   "txPower": -59
+  },
+  {
+   "id": "000000030011",
+   "floor": 3,
+   "x": 8.45,
+   "y": 25.49,
+   "txPower": -59
+  },
+  {
+   "id": "000000030012",
+   "floor": 3,
+   "x": 18.78,
+   "y": 75.55,
+   "txPower": -59
+  },
+  {
+   "id": "000000030013",
+   "floor": 3,
+   "x": 4.11,
+   "y": 69.33,
+   "txPower": -59
+  },
+  {
+   "id": "000000030014",
+   "floor": 3,
+   "x": 12.26,
+   "y": 52.01,
+   "txPower": -59
+  },
+  {
+   "id": "000000030015",
+   "floor": 3,
+   "x": 12.26,
+   "y": 34.15,
+   "txPower": -59
+  },
+  {
+   "id": "000000030016",
+   "floor": 3,
+   "x": 36.71,
+   "y": 11.96,
+   "txPower": -59
+  }
+ ]
+}

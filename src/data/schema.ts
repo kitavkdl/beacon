@@ -17,6 +17,7 @@ export type Category =
   | 'mechanical'
   | 'storage'
   | 'lounge'
+  | 'kitchen'
   | 'workroom';
 
 export interface Space {
