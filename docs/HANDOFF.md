@@ -170,8 +170,8 @@ npm run build
 
 ## 8. 대표님 결정이 필요한 것 (외부로 나가는 작업 — 실행 전 반드시 확인)
 
-1. **GitHub 푸시**: 원격 `kitavkdl/beacon`은 **PUBLIC**이다. 푸시하면 소스 전체가 공개된다. 선택지: 그대로 푸시 / 레포를 private로 바꾼 뒤 푸시.
-   클라우드 세션이 이어받으려면 푸시가 필요하다.
+1. ~~GitHub 푸시~~ **결정됨(2026-09-30)**: 대표님이 "public 그대로 푸시"를 선택. `feat/beacon-nav`를 `origin`에 푸시했다.
+   원격 `main`은 비어 있을 수 있으니 클론 후 `git checkout feat/beacon-nav`. 이후 푸시도 외부 전송이므로 매번 무엇이 나가는지 보고할 것.
 2. **Vercel 배포**: 팀 `kita`(slug `kitaa`, id `team_Y52MwjHkR5WJTIyBkbyF4OgT`)에 beacon 프로젝트는 **없다**. 로컬에 `vercel` CLI도 없다.
    가장 간단한 경로: Vercel 프로젝트를 GitHub 레포에 연결(framework `vite`, build `npm run build`, output `dist`) → 푸시하면 자동 배포.
    Vercel Hobby는 private 레포도 된다. 배포 전 무엇이 올라가는지(= `dist/`의 정적 파일만) 보고할 것.
