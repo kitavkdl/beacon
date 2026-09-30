@@ -86,17 +86,43 @@ describe('Locator', () => {
     expect(loc.locate(3500)!.floor).toBe(2);
   });
 
-  it('reset clears state; setOptions filter change clears filter state', () => {
+  it('reset clears state', () => {
     const loc = raw();
     loc.ingest(all(1, -60, 0));
     loc.reset();
     expect(loc.locate(0)).toBeNull();
+    expect(loc.heardBeacons(0)).toEqual([]);
+  });
+
+  it('setOptions filter change keeps the fix and restarts filters from the current value', () => {
+    const loc = raw();
     loc.ingest(all(1, -60, 0));
     loc.setOptions({ filter: 'kalman' });
-    expect(loc.locate(0)).toBeNull();
-    loc.setOptions({ estimator: 'proximity' });
-    loc.ingest(all(1, -60, 0));
     expect(loc.locate(0)).not.toBeNull();
+    loc.ingest(all(1, -80, 250));
+    // A fresh Kalman would jump straight to -80; a restarted one blends from -60.
+    const rssi = loc.heardBeacons(250)[0].rssi;
+    expect(rssi).toBeGreaterThan(-80);
+    expect(rssi).toBeLessThan(-60);
+    loc.setOptions({ estimator: 'proximity' });
+    expect(loc.locate(250)).not.toBeNull();
+  });
+
+  it('heardBeacons lists fresh beacons strongest first, with their floor', () => {
+    const loc = raw();
+    const [a, b] = floorIds(1);
+    const [c] = floorIds(2);
+    loc.ingest([
+      { beaconId: a, rssi: -70, t: 0 },
+      { beaconId: c, rssi: -65, t: 0 },
+      { beaconId: b, rssi: -80, t: 2000 },
+    ]);
+    expect(loc.heardBeacons(2000)).toEqual([
+      { beaconId: c, floor: 2, rssi: -65 },
+      { beaconId: a, floor: 1, rssi: -70 },
+      { beaconId: b, floor: 1, rssi: -80 },
+    ]);
+    expect(loc.heardBeacons(4000).map((h) => h.beaconId)).toEqual([b]);
   });
 
   it('walking across floor 1 with centroid+kalman: median error < 5 m, floor always 1', () => {
