@@ -742,16 +742,15 @@ export function smooth(g: Grid, cells: Vec2[]): Vec2[] {
     const a1 = Math.atan2(q[1] - p[1], q[0] - p[0]);
     const a2 = Math.atan2(r[1] - q[1], r[0] - q[0]);
     const d = Math.abs(((a2 - a1 + 3 * Math.PI) % (2 * Math.PI)) - Math.PI);
-    if (d >= (5 * Math.PI) / 180) out.push(q);
+    // Drop a near-straight vertex only if the shortcut p -> r is itself clear.
+    if (d >= (5 * Math.PI) / 180 || !lineOfSight(g, p, r)) out.push(q);
   }
   out.push(pulled[pulled.length - 1]);
   return out;
 }
 ```
 
-> Note on the 5° drop: dropping `q` keeps the segment `p → r`. Its line of sight is not re-checked, and a turn under 5° over ≤ 100 m can clip a corner by about 0.2 m. The `every smoothed segment has line of sight` test guards this. If that test fails on real data, re-check `lineOfSight(g, p, r)` before dropping.
-
-- [ ] **Step 5: Run the test and watch it pass.** Run `npx vitest run src/engine/route.test.ts`. Expected: all passed. If the line-of-sight test fails, apply the note above (check line of sight before dropping) and re-run.
+- [ ] **Step 5: Run the test and watch it pass.** Run `npx vitest run src/engine/route.test.ts`. Expected: all passed.
 
 - [ ] **Step 6: Commit.**
 
@@ -810,17 +809,18 @@ describe('units and words', () => {
 describe('directions', () => {
   it('merges straight runs, then turns, then arrives', () => {
     const route: Route = {
-      legs: [{ floor: 1, points: [[0.25, 5.25], [5.25, 5.25], [10.25, 5.5], [10.25, 1.25]] }],
+      legs: [{ floor: 1, points: [[0.25, 5.25], [5.25, 5.25], [9.75, 5.5], [9.75, 1.25]] }],
       transitions: [],
-      lengthM: 14.29,
+      lengthM: 13.76,
     };
     const { steps, totalFt } = directions(route, lib, 'Fixture tag', place);
+    // 5 m + 4.51 m (3° drift, merged) = 9.51 m = 31.2 ft -> 30; the doorway leg 4.25 m = 13.9 ft -> 15.
     expect(steps.map((s) => s.text)).toEqual([
-      'Start at Fixture tag. Head east and walk about 35 ft along North corridor, floor 1.',
+      'Start at Fixture tag. Head east and walk about 30 ft along North corridor, floor 1.',
       'Turn right and walk about 15 ft along Doorway.',
       'Special Collections (E2320) is in this area. Approximate location.',
     ]);
-    expect(totalFt).toBe(feet(14.29));
+    expect(totalFt).toBe(feet(13.76));
   });
 
   it('says turn around for a reversal', () => {
@@ -939,9 +939,7 @@ export function directions(route: Route, plan: Plan, startName: string, place: P
 }
 ```
 
-> The first test's expected text checks the merge rule. The segments (0.25→5.25) and (5.25→10.25, a 2.9° drift) merge into about 10.0 m, which is 35 ft (32.8 ft rounds to 35). The doorway segment (10.25,5.5)→(10.25,1.25) is a right turn of 4.25 m, which is 15 ft (13.9 rounds to 15). Its midpoint (10.25, 3.375) lies in neither the fixture's doorway (x 9–10) nor a corridor. If the name lookup returns null there, the expected text must drop " along Doorway". Fix the expectation to match the fixture, not the code: either change the doorway step's x to 9.75 in the test route, or accept no "along". Prefer the former: use `[9.75, 5.5], [9.75, 1.25]`, and keep the expected text as written.
-
-- [ ] **Step 4: Apply the note.** In the first test, change the route points to `[[0.25, 5.25], [5.25, 5.25], [9.75, 5.5], [9.75, 1.25]]` and `lengthM: 13.79`. Run `npx vitest run src/engine/directions.test.ts`. Expected: all passed. If a distance in the expected text differs by one 5 ft step, recompute it by hand from the points and fix the expectation. Do not change `feet()`.
+- [ ] **Step 4: Run the test and watch it pass.** Run `npx vitest run src/engine/directions.test.ts`. Expected: all passed. If an expected distance is off by one 5 ft step, recompute it by hand from the points and fix the expectation. Do not change `feet()`.
 
 - [ ] **Step 5: Commit.**
 
@@ -992,8 +990,8 @@ describe('searchPlaces', () => {
   });
   it('orders exact, prefix, contains, then names', () => {
     expect(ids('e23')).toEqual(['E2320', 'E2360']);
-    expect(ids('2320')).toEqual(['E2320', 'E3320']); // contains tier; floor then number
-    expect(ids('320')).toEqual(['E2320', 'E3320']);
+    expect(ids('2320')).toEqual(['E2320']); // contains tier
+    expect(ids('320')).toEqual(['E2320', 'E3320']); // contains tier; floor then id
   });
   it('does not flood on a single character', () => {
     expect(ids('5')).toEqual([]);
