@@ -268,3 +268,12 @@ a {
     overflow: visible;
   }
 }
+
+/* Room finder (Melville). Scoped under .finder so the NCS panel is unchanged. */
+.finder input[type='search'] { width: 100%; padding: 6px 8px; font: inherit; border: 1px solid var(--line); border-radius: 4px; }
+.finder .results { list-style: none; margin: 8px 0 0; padding: 0; }
+.finder .results button { width: 100%; text-align: left; padding: 6px 8px; border: 0; border-bottom: 1px solid var(--line); background: none; font: inherit; cursor: pointer; }
+.finder .results button.on, .finder .steps li.on { background: #eef3fc; }
+.finder .steps { padding-left: 20px; }
+.finder .steps li { padding: 2px 4px; border-radius: 3px; }
+.finder .check { display: flex; gap: 6px; align-items: center; }
