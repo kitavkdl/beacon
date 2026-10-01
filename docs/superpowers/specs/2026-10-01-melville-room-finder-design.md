@@ -1,6 +1,6 @@
 # M7 design: Melville Library room finder (NFC tag demo, simulated)
 
-Status: rev 2 (2026-10-01), revised after review ① (Sonnet + Fable). Task T4. The decisions in §2 are the owner's, quoted
+Status: rev 3 (2026-10-01), revised after review ① and its re-check (Sonnet + Fable). Task T4. The decisions in §2 are the owner's, quoted
 verbatim. Everything else is the implementer's design.
 
 ## 1. Goal and success criteria
@@ -21,8 +21,8 @@ Done when:
 5. "Avoid stairs" reroutes through elevators only, or says that no elevator-only route exists in these plans.
 6. The UI says plainly that this is a simulated demo built from 2014 plans, and that room locations and distances are
    approximate. The avoid-stairs caveat sits next to the checkbox and next to the result.
-7. `npm test` and `npm run build` pass. While its tab is shown, the NCS demo behaves exactly as before, and its existing
-   tests are unchanged. Switching tabs resets the NCS demo's state (§3).
+7. `npm test` and `npm run build` pass. While its tab is shown, the NCS demo behaves exactly as before. The existing NCS
+   assertions are unchanged and still pass (venue.test.ts is generalised, §10). Switching tabs resets the NCS demo's state (§3).
 
 ## 2. Owner decisions (verbatim, 2026-10-01, via beacon-announcement)
 
@@ -119,14 +119,19 @@ export interface Connector { id: string; kind: 'stairs' | 'elevator'; name: stri
 
 - **Floor.level**: the comment changes from "1-based" to "as numbered on the plan; 0 = basement". NCS still uses 1–3.
   All existing level comparisons use `===`, `>` or `=== null`; both reviewers confirmed that 0 is safe.
-- **Origin**: the SW corner of the floor-1 outline's bounding box. Basement or dock parts that stick out can have negative
-  coordinates.
+- **Frame and origin**: x = east and y = north = plan-up, as for NCS. The OSM fit (§9) gives the scale only; its rotation
+  is recorded as the plan-up vs true-north angle and is never applied to coordinates. The origin is the SW corner of the
+  floor-1 outline's bounding box. Basement or dock parts that stick out can have negative coordinates. Each floor's grid
+  starts at that floor's bounding-box minimum, rounded down to a multiple of 0.5 m, so cell indices are never negative.
 - **Walkable**: spaces with category `walkway`, `lounge`, `stairs` or `elevator`. Rev 1 left out `stairs` and `elevator`,
-  so no route could change floors. Floor voids are subtracted from walkable cells.
+  so no route could change floors. Floor voids are subtracted from walkable cells. Stair and elevator cores are traced as
+  dead ends with one opening onto a corridor, so a route cannot cut through a stairwell. With `avoidStairs`, cells inside
+  `stairs` spaces are not walkable at all.
 - **Wing → zone rule.** A room number is a wing letter (N/S/E/W), a floor digit and a number, e.g. E3320 = east wing,
   floor 3. For each floor the trace script defines one zone polygon per wing: the wing's band of offices beside its
   corridor. Its entry is the wing corridor's midpoint. A place goes to `zone[wing]` on its floor digit (`0` = basement).
-  Numbers sharing a wing and floor share a zone, which is the honest resolution of "approximate". A place without a number
+  If that wing has no zone on that floor, the place is left out. Numbers sharing a wing and floor share a zone and an
+  entry, which is the honest resolution of "approximate". The UI draws the zone, never a pin at the entry. A place without a number
   (e.g. "Central Reading Room") gets the zone the source describes ("1st floor, center"). It is left out if the source gives
   no floor.
 - **Multi-floor places** (e.g. Main Stacks, floors 2–4 per the library web page) are left out of M7. `Place.floor` stays a
@@ -134,16 +139,24 @@ export interface Connector { id: string; kind: 'stairs' | 'elevator'; name: stri
 
 **Place list.** The full list, with the source for each row, goes in a table in `scripts/trace-melville.mjs`. It is
 copied from research note `2026-10-01-melville-floorplans.md` §5 A and B, and the parts of PDF pp. 9–10 that the note did
-not copy are transcribed as number + department only. The table gets reviewed in review ②. Only rows whose source document
+not copy are transcribed as number + department only. If both sources give the same number, one row is kept, with the
+library website's name and `source: 'library-web'`. The table gets reviewed in review ②. Only rows whose source document
 was opened are included.
 
 ## 5. Routing (grid A*)
 
 **Grid.** `grid.ts` rasterises each floor at **0.5 m cells**. A cell is walkable when its centre lies inside a walkable
-polygon and outside every void. Corridors meet lounges and cores at shared edges, and a cell centre that sits exactly on a
-shared edge would fall in neither polygon. To avoid such gaps, the trace overlaps abutting walkable polygons by 0.5 m (one
-cell). `melville.test` catches any seam that remains, because a place becomes unreachable. Grids are built lazily per floor
-and cached. A floor is about 200 × 250 cells.
+polygon and outside every void. The trace makes this exact:
+- **Snapping.** The trace script snaps walkable polygon vertices to multiples of 0.5 m, which are the cell edges. A cell
+  centre therefore never lies on a polygon edge, and polygons that share an edge leave no seam. Polygons abut exactly, as
+  in NCS; they never overlap.
+- **Walls.** A wall that separates two walkable areas is traced as a gap of at least one cell. Otherwise a wall thinner
+  than a cell could not stop a route. Where two walkable polygons share an edge, that edge is an opening (a doorway or a
+  continuous space).
+- **Seams.** `melville.test` catches any seam that remains, because a place becomes unreachable.
+
+The snap moves geometry by at most 0.25 m, which is within the plans' coarse tracing. Grids are built lazily per floor
+(and per avoid-stairs mode) and cached. A floor is about 200 × 250 cells.
 
 **Search.** `route.ts` runs A* with a binary heap over states `(floor, cell)`:
 - **Same-floor moves** go to the 8 neighbours. One shared constant gives the costs: `CELL` (0.5 m) straight and
@@ -162,7 +175,8 @@ and cached. A floor is about 200 × 250 cells.
   There is no runtime snapping.
 - **No path** returns `null`. The UI then says "No route found in these plans", or "No elevator-only route found in these
   plans" when avoid-stairs is on.
-- **Reachability**: `reachable(lib, fromTag, avoidStairs)` floods every reachable state once (Dijkstra without a goal).
+- **Reachability**: `reachable(lib, fromTag, avoidStairs)` floods every reachable state once (a plain BFS over
+  (floor, cell) with connector edges).
   The data test uses it, with one flood per tag and mode, instead of a separate A* for each tag × place pair.
 
 **Smoothing (removing the zig-zag).** Raw 8-neighbour paths come out as stair steps, so each floor leg is string-pulled:
@@ -214,9 +228,14 @@ mapping as NCS).
 1. **Overview orbit** (6 s): one full turn around the building centre, high enough to frame the library. Focus is the tag's
    floor, so floors above it are hidden (Building hides floors above the focus).
 2. **Approach** (2 s, ease in/out): from the orbit end to above and behind the tag. Focus is the tag's floor.
-3. **Follow** (one shot per leg with at least 2 points): a `THREE.CatmullRomCurve3` is built in `Director` from the leg
-   points. The camera sits 12 m behind and 8 m above `getPointAt(t)` and looks 4 m ahead along `getTangentAt(t)`.
-   Duration is the leg length ÷ 6 m/s, clamped to 2–8 s. The step list highlights the step that `t` is in. Focus is the
+3. **Follow** (one shot per leg with at least 2 points). `cameraScript.ts` exports a pure `followPose(leg, s)`, and
+   Director calls the same function, so the script and the playback agree exactly. In `followPose`:
+   - `s` is the arc length along the smoothed polyline.
+   - The target point is `pointAt(s + 4 m)`, clamped to the leg end.
+   - The camera sits 12 m behind and 8 m above `pointAt(s)`, along the direction from `pointAt(s − 4 m)` to
+     `pointAt(s + 4 m)`. Because it looks ahead and behind, the view turns smoothly at corners. No curve object is needed.
+
+   Duration is the leg length ÷ 6 m/s, clamped to 2–8 s. The step list highlights the step that `s` is in. Focus is the
    leg's floor.
 4. **Floor change** (2.5 s, one shot per transition): the camera rises or drops at the connector while orbiting 120°
    around it. Focus switches to the destination floor at the start of the shot, so the arrival floor is visible from the
@@ -224,8 +243,14 @@ mapping as NCS).
 5. **Arrival orbit** (5 s): one full turn around the destination zone, with the zone highlighted. Focus is the destination
    floor.
 
-**Total length.** Total duration is capped at 45 s. If the sum is longer, follow shots are scaled down until it fits,
-with a floor of 1.5 s per follow shot. A start = destination route has no follow shots and no floor-change shots.
+**Total length.** Total duration is capped at 45 s. If the sum is longer, follow and floor-change shots are scaled down
+together until it fits, with a floor of 1 s each. If it still does not fit, the overview orbit is dropped. The worst case
+in Melville is a basement-to-5 route with 2 transitions and a handful of legs, well under the cap after scaling, and a
+test pins a synthetic 6-transition, 12-leg route at no more than 45 s. A start = destination route has no follow shots and
+no floor-change shots.
+
+**Polar limit.** Every scripted pose respects OrbitControls' `maxPolarAngle` (π/2.05, the same value as App), so there is
+no snap at hand-off.
 
 **OrbitControls hand-off.** drei's OrbitControls calls `update()` every frame while it is enabled, and that re-aims the
 camera at `controls.target`.
@@ -253,9 +278,9 @@ route. Focus is the destination floor.
 **Finder panel**, top to bottom:
 - **You are here**: tag name and floor, plus a "Simulate a tag tap" select listing every tag.
 - **Find a room**: a text box. Up to 8 results appear below it, each showing number, name and floor.
-  - **Matching**: case, spaces and hyphens are ignored. If the query normalises to a number fragment (letters and digits,
-    e.g. `e23`, `2320`), it prefix-matches canonical numbers and also matches numbers that contain it. Name words are
-    substring-matched.
+  - **Matching**: case, spaces and hyphens are ignored. A normalised query that matches `/^[nsew]?\d+$/` (e.g. `e23`,
+    `2320`) is a number query: it prefix-matches canonical numbers and also matches numbers that contain it. Every query,
+    number or not, is also substring-matched against names.
   - **Order**: exact number match first, then number prefix, then number contains, then name match. Ties are broken by
     floor, then number.
   - An empty query shows no results.
@@ -271,8 +296,10 @@ route. Focus is the destination floor.
 **State rules:**
 - Root reads the fragment once at load and again on `hashchange`. `#tag=<id>` or `#finder` selects the finder tab.
   Anything else, or no fragment, selects NCS.
-- Root owns `tag`. While the finder tab is shown, Root mirrors it to the fragment with `history.replaceState`, so no
-  history entries pile up.
+- Root owns the raw tag id as a string and never imports melville.json. Finder resolves and validates the id.
+- While the finder tab is shown, Root mirrors state to the fragment with `history.replaceState`, so no history entries
+  pile up. The fragment is `#tag=<id>` when a tag is set and `#finder` when none is. An unknown id is mirrored back as
+  typed.
 - Switching to the NCS tab clears the fragment. The tag stays in Root's state for when the user comes back.
 - `hash.ts` decodes inside try/catch. A malformed value (e.g. `%E0%A4%A`) counts as no tag.
 - An unknown tag id shows "Unknown tag" beside the picker, and the start stays unset.
@@ -289,7 +316,9 @@ The method is the same as for NCS (FLOORPLAN_TRACING.md), in its own script and 
 - The plan may be rotated relative to OSM, so the script does not fit the axis-aligned bounding boxes.
 - Instead it fits the floor-1 outline to OSM way 54723529 by a similarity transform (rotation + one isotropic scale +
   offset), using matched corner points.
-- It records the residual and the rotation in FLOORPLAN_TRACING.md.
+- Only the scale is used. Coordinates stay in the plan-up frame (§4).
+- It records the residual and the rotation in FLOORPLAN_TRACING.md. The rotation is the plan-up vs true-north angle,
+  like the ~9° noted for NCS.
 - Cross-check: the column bay spacing should come out as a plausible constant.
 - The rough pixel extents give 0.122–0.129 m/px. The fit decides the actual value.
 - Distances are shown as "about".
@@ -299,7 +328,7 @@ connector then gets one (x, y).
 
 **What is traced** (coarse, enough for routing):
 - every floor's outline;
-- corridors and open reading areas as walkway polygons, with descriptive names, overlapping their neighbours by 0.5 m;
+- corridors and open reading areas as walkway polygons, with descriptive names and vertices snapped to 0.5 m (§5);
 - stair and elevator cores, as spaces plus connectors;
 - tags at public points (entrances, elevator lobbies), with descriptive names;
 - per-wing place zones and entries.
@@ -316,12 +345,12 @@ Green evacuation arrows are ignored. Plan images stay in `docs/floorplans/melvil
 | Test file | What it checks |
 |---|---|
 | `grid.test.ts` | Rasterising a fixture L-corridor. A void removes cells. Supercover line of sight is blocked by a wall corner that point sampling would miss. |
-| `route.test.ts` | Uses a fixture with two floors, stairs and an elevator. Shortest path on one floor. Diagonal corner rule. One floor up uses the stairs, two floors up uses the elevator (crossover pinned). `avoidStairs` uses the elevator. Unreachable returns null. Start = end gives one point. Smoothing leaves 2 vertices on a straight corridor, including a 1 m wide one. A doglegged door still smooths to legal segments. Every smoothed segment has line of sight. `reachable()` matches A* results. |
+| `route.test.ts` | Uses a fixture with two floors, stairs and an elevator. Two parallel corridors separated by a one-cell wall gap are not connected. With avoid-stairs, no route enters a stairs cell. Shortest path on one floor. Diagonal corner rule. One floor up uses the stairs, two floors up uses the elevator (crossover pinned). `avoidStairs` uses the elevator. Unreachable returns null. Start = end gives one point. Smoothing leaves 2 vertices on a straight corridor, including a 1 m wide one. A doglegged door still smooths to legal segments. Every smoothed segment has line of sight. `reachable()` matches A* results. |
 | `directions.test.ts` | Left/right sign with x east and y north. Straight merging sums before rounding. Turn around. Rounding to 5 ft with "about". Basement wording. Floor change text. The first step after a floor change has no turn verb. Total is rounded from `lengthM`. |
 | `search.test.ts` | `e-2320`, `E2320`, `2320` and `e23` all find E2320, in the stated order. A name substring matches. An empty query returns nothing. |
 | `hash.test.ts` | Parse and format `#tag=` and `#finder`. Unknown keys are ignored. A malformed `%` sequence returns no tag and does not throw. |
-| `cameraScript.test.ts` | The properties in §7. |
-| `venue.test.ts` (generalised) | The existing Plan-level checks (consecutive floors, ascending elevation, unique space ids, vertices inside the outline, voids inside the outline) run on NCS and Melville. Beacon checks stay NCS-only. |
+| `cameraScript.test.ts` | The properties in §7, including follow-shot poses via `followPose`, the polar limit, and the synthetic 6-transition route under 45 s. |
+| `venue.test.ts` (generalised) | The existing Plan-level checks run on NCS and Melville: consecutive floors, ascending elevation, unique space ids, vertices inside the outline, voids inside the outline, and no room numbers in `Space.name`. Beacon checks stay NCS-only. |
 | `melville.test.ts` | Every tag and every place entry is on a walkable cell. Every connector's (x, y) is walkable on each of its floors, inside a stairs or elevator space. Using one `reachable()` flood per tag and mode, every place is reachable from every tag, and with avoid-stairs as well. No string field anywhere matches a phone pattern (`\d{3}[-.\s]\d{4}`). Place ids are unique and canonical. Every place's `source` is one of the two allowed values. |
 
 Build check: `dist/` contains no `.png` or `.pdf` from `docs/floorplans`, and melville.json is in its own lazy chunk.
