@@ -1,5 +1,6 @@
 import bench from '../data/bench.json';
-import { NCS } from '../data/venue';
+import type { Venue } from '../data/schema';
+import { VENUES, type VenueEntry } from '../data/venues';
 import type { Frame } from '../App';
 import type { EstimatorKind } from '../engine/estimators';
 import type { FilterKind } from '../engine/filters';
@@ -31,7 +32,12 @@ const FILTERS: [FilterKind, string][] = [
   ['ema', 'Moving average (EMA)'],
   ['none', 'None'],
 ];
-const VIEWS: [FloorView, string][] = [['auto', 'Follow'], ['all', 'All'], ...NCS.floors.map((f): [FloorView, string] => [f.level, String(f.level)])];
+const views = (venue: Venue): [FloorView, string][] => [
+  ['auto', 'Follow'],
+  ['all', 'All'],
+  ...venue.floors.map((f): [FloorView, string] => [f.level, String(f.level)]),
+];
+const BUILDINGS: [string, string][] = VENUES.map((e) => [e.venue.id, e.label]);
 const LEGEND: [string, string][] = [
   ['Office', CATEGORY_COLOR.office],
   ['Lab', CATEGORY_COLOR.laboratory],
@@ -41,9 +47,9 @@ const LEGEND: [string, string][] = [
   ['Stairs / elevator', CATEGORY_COLOR.stairs],
 ];
 
-const beaconFloor = new Map(NCS.beacons.map((b) => [b.id, b.floor]));
-
 interface Props {
+  entry: VenueEntry;
+  onVenue: (id: string) => void;
   mode: Mode;
   onMode: (m: Mode) => void;
   estimator: EstimatorKind;
@@ -110,8 +116,9 @@ function Readout({ mode, frame }: { mode: Mode; frame: Frame }) {
   );
 }
 
-function BenchTable({ filter, sigma, estimator }: { filter: FilterKind; sigma: number; estimator: EstimatorKind }) {
-  const rows = (bench as BenchRow[]).filter((r) => r.filter === filter);
+function BenchTable({ venueId, filter, sigma, estimator }: { venueId: string; filter: FilterKind; sigma: number; estimator: EstimatorKind }) {
+  const rows = ((bench as Record<string, BenchRow[]>)[venueId] ?? []).filter((r) => r.filter === filter);
+  if (rows.length === 0) return <p className="note">Not benchmarked yet. Run <code>npm run bench</code>.</p>;
   const sigmas = [...new Set(rows.map((r) => r.sigma))];
   const s = sigmas.reduce((best, v) => (Math.abs(v - sigma) < Math.abs(best - sigma) ? v : best), sigmas[0]);
   const pick = (scenario: string, e: string) => rows.find((r) => r.scenario === scenario && r.estimator === e && r.sigma === s);
@@ -154,13 +161,22 @@ function BenchTable({ filter, sigma, estimator }: { filter: FilterKind; sigma: n
 }
 
 export function Panel(p: Props) {
+  const { venue } = p.entry;
   const heard = p.frame.heard.slice(0, 8);
+  const beaconFloor = new Map(venue.beacons.map((b) => [b.id, b.floor]));
   return (
     <aside className="panel">
       <header>
         <h1>SBU Beacon Nav</h1>
-        <p className="sub">Indoor positioning demo, New Computer Science building, Stony Brook University</p>
+        <p className="sub">Indoor positioning demo, {venue.name}, Stony Brook University</p>
       </header>
+
+      {BUILDINGS.length > 1 && (
+        <section>
+          <h2>Building</h2>
+          <Segmented label="Building" value={venue.id} onChange={p.onVenue} options={BUILDINGS} />
+        </section>
+      )}
 
       <section>
         <h2>Mode</h2>
@@ -183,11 +199,11 @@ export function Panel(p: Props) {
         )}
         {p.mode === 'sim' && (
           <p className="note">
-            A simulated visitor walks from the main entrance through the atrium and up to floors 2 and 3. The
-            simulator turns their true position into beacon signal strengths; the app only sees those.
+            {p.entry.tourNote} The simulator turns their true position into beacon signal strengths; the app only sees
+            those.
           </p>
         )}
-        {p.mode === 'live' && <LivePanel live={p.live} onStart={p.onStartScan} />}
+        {p.mode === 'live' && <LivePanel namespace={venue.eddystoneNamespace} live={p.live} onStart={p.onStartScan} />}
       </section>
 
       <section>
@@ -227,7 +243,7 @@ export function Panel(p: Props) {
 
       <section>
         <h2>View</h2>
-        <Segmented label="Floor" value={p.view} onChange={p.onView} options={VIEWS} />
+        <Segmented label="Floor" value={p.view} onChange={p.onView} options={views(venue)} />
         <ul className="legend">
           <li className="wide">
             <span className="dot" style={{ background: '#2d6cdf' }} /> Estimated position
@@ -283,13 +299,12 @@ export function Panel(p: Props) {
 
       <section>
         <h2>Simulated accuracy</h2>
-        <BenchTable filter={p.filter} sigma={p.sigma} estimator={p.estimator} />
+        <BenchTable venueId={venue.id} filter={p.filter} sigma={p.sigma} estimator={p.estimator} />
       </section>
 
       <footer>
         <p>
-          Floor geometry traced from the official 2015 floor plans (Mitchell | Giurgola Architects). Room labels are the
-          plan's own; the plan has no room numbers. {NCS.beacons.length} beacon positions are a proposed layout.
+          {p.entry.credit} {venue.beacons.length} beacon positions are a proposed layout.
         </p>
         <p>Everything runs in this page. No location data is sent anywhere.</p>
         <p>
@@ -300,12 +315,12 @@ export function Panel(p: Props) {
   );
 }
 
-function LivePanel({ live, onStart }: { live: LiveState; onStart: () => void }) {
+function LivePanel({ namespace, live, onStart }: { namespace: string; live: LiveState; onStart: () => void }) {
   if (live.status === 'unsupported') return <p className="warn">{live.reason}</p>;
   return (
     <>
       <p className="note">
-        Scans for Eddystone-UID beacons in namespace <code>{NCS.eddystoneNamespace}</code> using Web Bluetooth. Only
+        Scans for Eddystone-UID beacons in namespace <code>{namespace}</code> using Web Bluetooth. Only
         beacons in this venue's list are used.
       </p>
       {live.status === 'error' && <p className="warn">{live.reason}</p>}

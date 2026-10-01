@@ -2,7 +2,7 @@
 
 순서: **이 문서 → `CLAUDE.md` → `docs/SPEC.md` → `docs/superpowers/plans/2026-09-30-beacon-nav.md` → `docs/RESEARCH.md`**.
 
-- 브랜치: 작업 브랜치 `claude/keen-babbage-u2ik3q` (1차 세션 브랜치 `feat/beacon-nav` 위에 쌓음). 원격에는 `main`이 없다.
+- 브랜치: 기본 브랜치는 `main`(2026-09-30 대표님 결정 "main으로 하고 지금 브랜치들 main에 다 반영해 줘"). `feat/beacon-nav`·`claude/keen-babbage-u2ik3q`·`claude/lucid-noether-x1ufq3`는 `main`에 반영된 옛 작업 브랜치다(앞의 둘은 `main`의 조상, lucid-noether는 rebase되어 `955c30a`로 들어감).
 - 원격: `https://github.com/kitavkdl/beacon` (**PUBLIC**). 푸시·배포는 외부 전송이므로 매번 무엇이 나가는지 보고한다.
 - 대표님 요청 원문: "웹에 바로 배포까지 가능하도록 끝까지 쭉 진행". 사용자는 한국어, 호칭은 "대표님".
 
@@ -100,11 +100,10 @@ npm run build
 
 ## 8. 대표님 결정이 필요한 것 (외부로 나가는 작업 — 실행 전 반드시 확인)
 
-1. ~~GitHub 푸시~~ **결정됨(2026-09-30)**: 대표님이 "public 그대로 푸시"를 선택. `feat/beacon-nav`를 `origin`에 푸시했다.
-   원격 `main`은 비어 있을 수 있으니 클론 후 `git checkout feat/beacon-nav`. 이후 푸시도 외부 전송이므로 매번 무엇이 나가는지 보고할 것.
+1. ~~GitHub 푸시~~ **결정됨(2026-09-30)**: 대표님이 "public 그대로 푸시"를 선택. `feat/beacon-nav`를 `origin`에 푸시했고, 지금은 `main`이 기준이다. GitHub Default branch가 아직 `feat/beacon-nav`일 수 있으니 클론은 `git clone -b main`으로 한다. 이후 푸시도 외부 전송이므로 매번 무엇이 나가는지 보고할 것.
 2. **Vercel 배포** (2026-09-30 확인): 팀 `kita`(slug `kitaa`, id `team_Y52MwjHkR5WJTIyBkbyF4OgT`)에 beacon 프로젝트는 **없다**.
-   GitHub 원격에는 `feat/beacon-nav` 브랜치만 있고 `main`이 없다 → 레포를 Vercel에 연결하면 기본 브랜치의 코드가 production이 된다.
-   따라서 배포 전에 (a) 완성 코드를 기본 브랜치에 합치거나(PR 머지), (b) Vercel production 브랜치를 작업 브랜치로 지정해야 한다.
+   레포를 Vercel에 연결하면 production 브랜치의 코드가 production이 된다. production 브랜치는 `main`으로 둔다
+   (GitHub 레포의 Default branch도 `main`이어야 한다).
    연결 설정: framework Vite, build `npm run build`, output `dist`. 올라가는 것은 `dist/`의 정적 파일(HTML·JS·CSS)뿐, 도면 이미지 없음.
 
 ## 9. 알려진 한계·주의
