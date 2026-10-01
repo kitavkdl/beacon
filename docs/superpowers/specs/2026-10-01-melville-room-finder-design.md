@@ -1,6 +1,6 @@
 # M7 design: Melville Library room finder (NFC tag demo, simulated)
 
-Status: rev 3 (2026-10-01), revised after review ① and its re-check (Sonnet + Fable). Task T4. The decisions in §2 are the owner's, quoted
+Status: rev 4 (2026-10-01), revised after review ① and two re-checks (Sonnet + Fable). Task T4. The decisions in §2 are the owner's, quoted
 verbatim. Everything else is the implementer's design.
 
 ## 1. Goal and success criteria
@@ -147,15 +147,21 @@ was opened are included.
 
 **Grid.** `grid.ts` rasterises each floor at **0.5 m cells**. A cell is walkable when its centre lies inside a walkable
 polygon and outside every void. The trace makes this exact:
-- **Snapping.** The trace script snaps walkable polygon vertices to multiples of 0.5 m, which are the cell edges. A cell
-  centre therefore never lies on a polygon edge, and polygons that share an edge leave no seam. Polygons abut exactly, as
-  in NCS; they never overlap.
-- **Walls.** A wall that separates two walkable areas is traced as a gap of at least one cell. Otherwise a wall thinner
-  than a cell could not stop a route. Where two walkable polygons share an edge, that edge is an opening (a doorway or a
-  continuous space).
+- **Rectilinear and snapped.** Walkable polygons, floor outlines and voids have axis-aligned edges only, and every vertex
+  is snapped to a multiple of 0.5 m (the cell edges). Cell centres sit at 0.25 + 0.5k, so a centre never lies on an
+  edge, and polygons that share an edge leave no seam. Polygons abut exactly and never overlap. The plans are almost
+  entirely orthogonal; any diagonal wall is traced as a staircase of axis-aligned edges.
+- **Walls.** A wall that separates two walkable areas is a gap of at least 0.5 m (one cell), measured after snapping.
+- **Openings are declared.** Wherever two walkable polygons share an edge, that edge is passable (a doorway or an
+  opening between spaces). The trace script holds an `OPENINGS` list of polygon pairs that may touch. `npm run
+  trace:melville` fails when two walkable polygons share an edge and are not in that list, and also when two polygons
+  that are not in the list are closer than 0.5 m. A wall can therefore not silently become a doorway, even after snapping.
+- **Doors.** A door through a wall gap is a small `walkway` threshold polygon spanning the gap. It shares an edge with the
+  room and with the corridor, and both pairs are listed in `OPENINGS`. Room and corridor polygons stay rectangular.
+- **Width.** Every walkable polygon is at least 1 m wide after snapping. The trace script asserts this.
 - **Seams.** `melville.test` catches any seam that remains, because a place becomes unreachable.
 
-The snap moves geometry by at most 0.25 m, which is within the plans' coarse tracing. Grids are built lazily per floor
+The snap moves geometry by at most 0.25 m per axis, which is within the plans' coarse tracing. Grids are built lazily per floor
 (and per avoid-stairs mode) and cached. A floor is about 200 × 250 cells.
 
 **Search.** `route.ts` runs A* with a binary heap over states `(floor, cell)`:
@@ -235,6 +241,9 @@ mapping as NCS).
    - The camera sits 12 m behind and 8 m above `pointAt(s)`, along the direction from `pointAt(s − 4 m)` to
      `pointAt(s + 4 m)`. Because it looks ahead and behind, the view turns smoothly at corners. No curve object is needed.
 
+      - If the two points are less than 0.5 m apart (the leg is short or doubles back), the camera falls back to the
+     direction of the current segment.
+
    Duration is the leg length ÷ 6 m/s, clamped to 2–8 s. The step list highlights the step that `s` is in. Focus is the
    leg's floor.
 4. **Floor change** (2.5 s, one shot per transition): the camera rises or drops at the connector while orbiting 120°
@@ -244,7 +253,7 @@ mapping as NCS).
    floor.
 
 **Total length.** Total duration is capped at 45 s. If the sum is longer, follow and floor-change shots are scaled down
-together until it fits, with a floor of 1 s each. If it still does not fit, the overview orbit is dropped. The worst case
+together until it fits, with a floor of 1.5 s each. If it still does not fit, the overview orbit is dropped. The worst case
 in Melville is a basement-to-5 route with 2 transitions and a handful of legs, well under the cap after scaling, and a
 test pins a synthetic 6-transition, 12-leg route at no more than 45 s. A start = destination route has no follow shots and
 no floor-change shots.
@@ -280,7 +289,7 @@ route. Focus is the destination floor.
 - **Find a room**: a text box. Up to 8 results appear below it, each showing number, name and floor.
   - **Matching**: case, spaces and hyphens are ignored. A normalised query that matches `/^[nsew]?\d+$/` (e.g. `e23`,
     `2320`) is a number query: it prefix-matches canonical numbers and also matches numbers that contain it. Every query,
-    number or not, is also substring-matched against names.
+    number or not, is also substring-matched against names. The "contains" tier for numbers needs at least 2 characters.
   - **Order**: exact number match first, then number prefix, then number contains, then name match. Ties are broken by
     floor, then number.
   - An empty query shows no results.
@@ -298,8 +307,8 @@ route. Focus is the destination floor.
   Anything else, or no fragment, selects NCS.
 - Root owns the raw tag id as a string and never imports melville.json. Finder resolves and validates the id.
 - While the finder tab is shown, Root mirrors state to the fragment with `history.replaceState`, so no history entries
-  pile up. The fragment is `#tag=<id>` when a tag is set and `#finder` when none is. An unknown id is mirrored back as
-  typed.
+  pile up. The fragment is `#tag=<encodeURIComponent(id)>` when a tag is set and `#finder` when none is. An unknown id is
+  mirrored back as typed (encoded).
 - Switching to the NCS tab clears the fragment. The tag stays in Root's state for when the user comes back.
 - `hash.ts` decodes inside try/catch. A malformed value (e.g. `%E0%A4%A`) counts as no tag.
 - An unknown tag id shows "Unknown tag" beside the picker, and the start stays unset.
@@ -344,14 +353,14 @@ Green evacuation arrows are ignored. Plan images stay in `docs/floorplans/melvil
 
 | Test file | What it checks |
 |---|---|
-| `grid.test.ts` | Rasterising a fixture L-corridor. A void removes cells. Supercover line of sight is blocked by a wall corner that point sampling would miss. |
+| `grid.test.ts` | Rasterising a fixture L-corridor. A void removes cells. A one-cell gap between two rectangles blocks movement; a threshold polygon across it opens it. Supercover line of sight is blocked by a wall corner that point sampling would miss. |
 | `route.test.ts` | Uses a fixture with two floors, stairs and an elevator. Two parallel corridors separated by a one-cell wall gap are not connected. With avoid-stairs, no route enters a stairs cell. Shortest path on one floor. Diagonal corner rule. One floor up uses the stairs, two floors up uses the elevator (crossover pinned). `avoidStairs` uses the elevator. Unreachable returns null. Start = end gives one point. Smoothing leaves 2 vertices on a straight corridor, including a 1 m wide one. A doglegged door still smooths to legal segments. Every smoothed segment has line of sight. `reachable()` matches A* results. |
 | `directions.test.ts` | Left/right sign with x east and y north. Straight merging sums before rounding. Turn around. Rounding to 5 ft with "about". Basement wording. Floor change text. The first step after a floor change has no turn verb. Total is rounded from `lengthM`. |
 | `search.test.ts` | `e-2320`, `E2320`, `2320` and `e23` all find E2320, in the stated order. A name substring matches. An empty query returns nothing. |
-| `hash.test.ts` | Parse and format `#tag=` and `#finder`. Unknown keys are ignored. A malformed `%` sequence returns no tag and does not throw. |
+| `hash.test.ts` | Parse and format `#tag=` and `#finder`. Round trip of an id containing a space and `#`. Unknown keys are ignored. A malformed `%` sequence returns no tag and does not throw. |
 | `cameraScript.test.ts` | The properties in §7, including follow-shot poses via `followPose`, the polar limit, and the synthetic 6-transition route under 45 s. |
 | `venue.test.ts` (generalised) | The existing Plan-level checks run on NCS and Melville: consecutive floors, ascending elevation, unique space ids, vertices inside the outline, voids inside the outline, and no room numbers in `Space.name`. Beacon checks stay NCS-only. |
-| `melville.test.ts` | Every tag and every place entry is on a walkable cell. Every connector's (x, y) is walkable on each of its floors, inside a stairs or elevator space. Using one `reachable()` flood per tag and mode, every place is reachable from every tag, and with avoid-stairs as well. No string field anywhere matches a phone pattern (`\d{3}[-.\s]\d{4}`). Place ids are unique and canonical. Every place's `source` is one of the two allowed values. |
+| `melville.test.ts` | All walkable polygons, outlines and voids are rectilinear with vertices on the 0.5 m lattice. Every tag and every place entry is on a walkable cell, in both the default and the avoid-stairs grid. Every connector's (x, y) is walkable on each of its floors, inside a stairs or elevator space. Using one `reachable()` flood per tag and mode, every place is reachable from every tag, and with avoid-stairs as well. No string field anywhere matches a phone pattern (`\d{3}[-.\s]\d{4}`). Place ids are unique and canonical. Every place's `source` is one of the two allowed values. |
 
 Build check: `dist/` contains no `.png` or `.pdf` from `docs/floorplans`, and melville.json is in its own lazy chunk.
 
