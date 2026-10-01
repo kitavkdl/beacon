@@ -1,6 +1,6 @@
 # M7 design: Melville Library room finder (NFC tag demo, simulated)
 
-Status: rev 5 (2026-10-01), revised after review ① and two re-checks (Sonnet + Fable). Task T4. The decisions in §2 are the owner's, quoted
+Status: rev 6 (2026-10-01; rev 6 aligns wording with the implementation plan's review), revised after review ① and two re-checks (Sonnet + Fable). Task T4. The decisions in §2 are the owner's, quoted
 verbatim. Everything else is the implementer's design.
 
 ## 1. Goal and success criteria
@@ -209,6 +209,8 @@ a positive cross product means a left turn):
 - |θ| < 30°: no new step; the segment joins the current one. Its meters are added before any rounding.
 - 30–150°: "Turn left" or "Turn right".
 - more than 150°: "Turn around".
+- Segments shorter than 1.5 m (the jog through a 0.5 m doorway threshold) never start a step or change the heading;
+  their meters join the current step.
 
 **Step text.** Each step reads "{verb} and walk about {ft} ft along {walkway name}". The walkway name comes from the walkway
 space that contains the segment's midpoint. Every Melville walkway gets a descriptive name by construction ("East
@@ -218,7 +220,7 @@ corridor, floor 3").
 - **First step**: "Start at {tag name}. Head {compass word}". There are 8 compass words, measured on plan-up, which is
   called "north" with the NCS caveat.
 - **Floor change**: "Take the {connector name} to {floor n | the basement}".
-- **First segment after a floor change**: "Leave the {stairs | elevator} and head {compass word}". There is no turn
+- **First segment after a floor change**: "Leave the {stairs | elevator}, head {compass word} and walk about …". There is no turn
   verb, because the heading before a floor change has no meaning after it.
 - **Last step**: "{place name} ({number}) is in this area. Approximate location."
 - **Start = destination** (one-point leg): a single step, "{place} is right here. Approximate location."
@@ -228,7 +230,7 @@ corridor, floor 3").
 
 ## 7. Camera script (`cameraScript.ts` + `Director.tsx`)
 
-`cameraScript(route, plan, stackScale, reducedMotion)` returns a list of shots. Each shot is `{ kind, durationS, step?,
+`cameraScript(route, plan, stackScale, zone, reducedMotion)` returns a list of shots. Each shot is `{ kind, durationS, step?,
 focus, from: Pose, to: Pose, path? }`, where a pose is a camera position plus a look target in world units (the same
 mapping as NCS).
 
@@ -291,7 +293,8 @@ route. Focus is the destination floor.
 - **Find a room**: a text box. Up to 8 results appear below it, each showing number, name and floor.
   - **Matching**: case, spaces and hyphens are ignored. A normalised query that matches `/^[nsew]?\d+$/` (e.g. `e23`,
     `2320`) is a number query: it prefix-matches canonical numbers and also matches numbers that contain it. Every query,
-    number or not, is also substring-matched against names. The "contains" tier for numbers needs at least 2 characters.
+    number or not, is also substring-matched against names. Queries shorter than 2 characters (after normalising) return
+    nothing, so one letter or digit never floods the list.
   - **Order**: exact number match first, then number prefix, then number contains, then name match. Ties are broken by
     floor, then number.
   - An empty query shows no results.
@@ -346,7 +349,8 @@ connector then gets one (x, y).
 
 Individual offices are not traced, because the room labels are unreadable.
 
-**Floors.** Basement and floors 1–5. Elevation is an assumed 4.5 m per floor; the plan does not give it.
+**Floors.** Basement and floors 1–5. Elevation is an assumed 4.5 m per floor; the plan does not give it. Floor 1 is at
+0 and the basement at −4.5 m (slab top above ground, as for NCS).
 
 Green evacuation arrows are ignored. Plan images stay in `docs/floorplans/melville/`, which is gitignored. The
 `.gitignore` comment and FLOORPLAN_TRACING.md get the SBU Libraries plans added next to Mitchell | Giurgola.

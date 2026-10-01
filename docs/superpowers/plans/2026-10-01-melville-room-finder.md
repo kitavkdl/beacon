@@ -39,7 +39,7 @@
 2. **A route that starts and ends in the same wing zone, or is zero length.** Expected: one step, "is right here", and no camera follow shots. Pinned in Task 4, Task 6 and Task 3.
 3. **Avoid-stairs when only stairs connect two parts.** Expected: "No elevator-only route found in these plans", not a crash and not a stairs route. Pinned in Task 3 (`route.test` avoid-stairs null case) and Task 7 (`melville.test` reachability with avoid-stairs).
 4. **The user grabs the 3D view during playback, or switches tabs mid-playback.** Expected: playback stops where it is, the controls work at once with no snap, and leaving the tab unmounts the Finder cleanly. Pinned in Task 8 (Director finish on pointerdown, manual check in Task 9).
-5. **A short query such as `5` or `e`.** Expected: a bounded, ordered list (≤ 8) with no "contains" flood from one digit. Pinned in Task 5 (`search.test`).
+5. **A short query such as `5` or `e`.** Expected: no results until a second character is typed (a one-character query would flood the list), and never more than 8 results. Pinned in Task 5 (`search.test`).
 
 ---
 
@@ -396,7 +396,7 @@ function floor(level: number, extra: Space[]): Floor {
 }
 
 /** Synthetic three-floor library for engine tests. */
-export function routeFixture({ door = true } = {}): Library {
+export function routeFixture({ door = true, elevator = true } = {}): Library {
   const f1extra = [sp('s1', 'South corridor, floor 1', 'walkway', rect(0, 0, 20, 2))];
   if (door) f1extra.push(sp('d1', 'Doorway', 'walkway', rect(9, 2, 10, 4)));
   return {
@@ -408,7 +408,7 @@ export function routeFixture({ door = true } = {}): Library {
     places: [],
     connectors: [
       { id: 'w-stairs', kind: 'stairs', name: 'West stairs', x: 1.25, y: 7.25, floors: [1, 2, 3] },
-      { id: 'e-elev', kind: 'elevator', name: 'East elevator', x: 19.25, y: 7.25, floors: [1, 2, 3] },
+      ...(elevator ? [{ id: 'e-elev', kind: 'elevator' as const, name: 'East elevator', x: 19.25, y: 7.25, floors: [1, 2, 3] }] : []),
     ],
   };
 }
@@ -460,6 +460,22 @@ describe('Router', () => {
     const route = r.route(P(1, 1.25, 5.25), P(2, 1.25, 5.25), true)!;
     expect(route.transitions.map((t) => t.connector.kind)).toEqual(['elevator']);
     for (const leg of route.legs) for (const [x, y] of leg.points) expect(x <= 2 && y >= 6).toBe(false);
+  });
+
+  it('avoidStairs with no elevator finds no route', () => {
+    expect(new Router(routeFixture({ elevator: false })).route(P(1, 1.25, 5.25), P(2, 1.25, 5.25), true)).toBeNull();
+  });
+
+  it('straightens a run through a 1 m doorway to two points', () => {
+    expect(r.route(P(1, 9.25, 0.25), P(1, 9.25, 5.75), false)!.legs[0].points).toEqual([[9.25, 0.25], [9.25, 5.75]]);
+  });
+
+  it('never cuts the doorway corners (every segment in sight)', () => {
+    const route = r.route(P(1, 0.25, 0.25), P(1, 19.75, 5.75), false)!;
+    const g = r.grid(1, false);
+    const pts = route.legs[0].points;
+    for (let i = 1; i < pts.length; i++) expect(lineOfSight(g, pts[i - 1], pts[i])).toBe(true);
+    expect(pts.length).toBeGreaterThan(2);
   });
 
   it('returns null when the only link is a missing doorway', () => {
@@ -526,6 +542,7 @@ export interface Transition {
   from: number;
   to: number;
 }
+/** Invariant: transitions.length === legs.length - 1 (transition i links leg i to leg i + 1). */
 export interface Route {
   legs: Leg[];
   transitions: Transition[];
@@ -823,6 +840,14 @@ describe('directions', () => {
     expect(totalFt).toBe(feet(13.76));
   });
 
+  it('folds a doorway jog into the step instead of two 5 ft turns', () => {
+    const route: Route = { legs: [{ floor: 1, points: [[0.25, 0.25], [5.75, 2.25], [5.75, 2.75], [9.75, 4.25]] }], transitions: [], lengthM: 10.6 };
+    const walks = directions(route, lib, 'T', place).steps.filter((s) => s.kind === 'walk');
+    expect(walks).toHaveLength(1);
+    expect(walks[0]).toMatchObject({ s0: 0 });
+    expect(walks[0].s1).toBeCloseTo(5.85 + 0.5 + 4.27, 1);
+  });
+
   it('says turn around for a reversal', () => {
     const route: Route = { legs: [{ floor: 2, points: [[1.25, 5.25], [10.25, 5.25], [3.25, 5.25]] }], transitions: [], lengthM: 16 };
     expect(directions(route, lib, 'T', place).steps[1].text).toMatch(/^Turn around and walk about 25 ft/);
@@ -882,7 +907,13 @@ export interface Step {
   /** Index of the leg the step belongs to (floor steps: the leg they lead into). */
   leg: number;
   kind: 'walk' | 'floor' | 'arrive';
+  /** Arc-length range along the leg covered by a walk step, meters (0, 0 for other kinds). */
+  s0: number;
+  s1: number;
 }
+
+/** Segments shorter than this (doorway jogs through a 0.5 m threshold) never start a step or change the heading. */
+const SHORT = 1.5;
 
 function walkwayName(plan: Plan, level: number, p: Vec2): string | null {
   const f = plan.floors.find((x) => x.level === level);
@@ -895,46 +926,59 @@ const label = (place: Place) => (place.number ? `${place.name} (${place.number})
 export function directions(route: Route, plan: Plan, startName: string, place: Place): { steps: Step[]; totalFt: number } {
   const steps: Step[] = [];
   const single = route.legs.length === 1 && route.legs[0].points.length === 1;
-  if (single) return { steps: [{ text: `${label(place)} is right here. Approximate location.`, leg: 0, kind: 'arrive' }], totalFt: feet(0) };
+  if (single) return { steps: [{ text: `${label(place)} is right here. Approximate location.`, leg: 0, kind: 'arrive', s0: 0, s1: 0 }], totalFt: feet(0) };
 
   route.legs.forEach((leg, li) => {
     if (li > 0) {
       const t = route.transitions[li - 1];
-      steps.push({ text: `Take the ${t.connector.name} to ${floorName(t.to)}.`, leg: li, kind: 'floor' });
+      steps.push({ text: `Take the ${t.connector.name} to ${floorName(t.to)}.`, leg: li, kind: 'floor', s0: 0, s1: 0 });
     }
     const pts = leg.points;
-    let open: { verb: string; meters: number; mid: Vec2 } | null = null;
+    let open: { verb: string; meters: number; mid: Vec2; s0: number } | null = null;
+    let heading: Vec2 | null = null;
+    let s = 0;
     const close = () => {
       if (!open) return;
       const name = walkwayName(plan, leg.floor, open.mid);
-      steps.push({ text: `${open.verb} and walk about ${feet(open.meters)} ft${name ? ` along ${name}` : ''}.`, leg: li, kind: 'walk' });
+      steps.push({ text: `${open.verb} and walk about ${feet(open.meters)} ft${name ? ` along ${name}` : ''}.`, leg: li, kind: 'walk', s0: open.s0, s1: s });
       open = null;
     };
     for (let i = 1; i < pts.length; i++) {
       const d: Vec2 = [pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]];
       const m = Math.hypot(d[0], d[1]);
       const mid: Vec2 = [(pts[i][0] + pts[i - 1][0]) / 2, (pts[i][1] + pts[i - 1][1]) / 2];
-      if (i === 1) {
+      if (!open) {
         const head = compass(d[0], d[1]);
         const verb =
           li === 0
             ? `Start at ${startName}. Head ${head}`
             : `Leave the ${route.transitions[li - 1].connector.kind === 'stairs' ? 'stairs' : 'elevator'}, head ${head}`;
-        open = { verb, meters: m, mid };
+        open = { verb, meters: m, mid, s0: s };
+        heading = m >= SHORT ? d : null;
+        s += m;
         continue;
       }
-      const prev: Vec2 = [pts[i - 1][0] - pts[i - 2][0], pts[i - 1][1] - pts[i - 2][1]];
-      const t = turnDeg(prev, d);
-      if (Math.abs(t) < 30 && open) {
+      if (m < SHORT || heading === null) {
+        // A doorway jog, or the first real heading after one: walk on without a new step.
         open.meters += m;
+        if (m >= SHORT) heading = d;
+        s += m;
+        continue;
+      }
+      const t = turnDeg(heading, d);
+      heading = d;
+      if (Math.abs(t) < 30) {
+        open.meters += m;
+        s += m;
         continue;
       }
       close();
-      open = { verb: Math.abs(t) > 150 ? 'Turn around' : t > 0 ? 'Turn left' : 'Turn right', meters: m, mid };
+      open = { verb: Math.abs(t) > 150 ? 'Turn around' : t > 0 ? 'Turn left' : 'Turn right', meters: m, mid, s0: s };
+      s += m;
     }
     close();
   });
-  steps.push({ text: `${label(place)} is in this area. Approximate location.`, leg: route.legs.length - 1, kind: 'arrive' });
+  steps.push({ text: `${label(place)} is in this area. Approximate location.`, leg: route.legs.length - 1, kind: 'arrive', s0: 0, s1: 0 });
   return { steps, totalFt: feet(route.lengthM) };
 }
 ```
@@ -1003,7 +1047,7 @@ describe('searchPlaces', () => {
   });
   it('returns nothing for an empty query and caps at the limit', () => {
     expect(ids('  ')).toEqual([]);
-    expect(searchPlaces(P, 'e', 1)).toHaveLength(0);
+    expect(searchPlaces(P, 'e2', 1)).toHaveLength(1);
   });
 });
 ```
@@ -1115,6 +1159,7 @@ git commit -m "feat: place search (2+ characters) and #tag fragment parsing"
   - `poseAt(shot: Shot, u: number): Pose`
   - `cameraScript(route: Route, plan: Plan, stackScale: number, zone: Polygon, reducedMotion: boolean): Shot[]`
   - `totalDuration(shots: Shot[]): number`
+  - `lengthOf(pts: Vec2[]): number`
 
 - [ ] **Step 1: Write the failing test** `src/finder/cameraScript.test.ts`:
 
@@ -1122,7 +1167,7 @@ git commit -m "feat: place search (2+ characters) and #tag fragment parsing"
 import { describe, expect, it } from 'vitest';
 import type { Route } from '../engine/route';
 import { routeFixture } from '../engine/routeFixture';
-import { cameraScript, MAX_POLAR, poseAt, totalDuration, type Pose } from './cameraScript';
+import { cameraScript, followPose, MAX_POLAR, poseAt, totalDuration, type Pose } from './cameraScript';
 
 const lib = routeFixture();
 const zone: [number, number][] = [[12, 4], [16, 4], [16, 6], [12, 6]];
@@ -1153,9 +1198,15 @@ describe('cameraScript', () => {
     for (const s of shots) for (let u = 0; u <= 1; u += 0.05) expect(elevationOK(poseAt(s, u))).toBe(true);
   });
 
+  it('followPose rides 12 m behind and 8 m above, looking 4 m ahead', () => {
+    const p = followPose([[0, 0], [20, 0]], 10, 0);
+    [-2, 8, 0].forEach((v, i) => expect(p.pos[i]).toBeCloseTo(v));
+    [14, 1, 0].forEach((v, i) => expect(p.target[i]).toBeCloseTo(v));
+  });
+
   it('caps a long route at 45 s', () => {
     const legs = Array.from({ length: 12 }, (_, i) => ({ floor: (i % 3) + 1, points: [[0.25, 5.25], [19.75, 5.25]] as [number, number][] }));
-    const transitions = Array.from({ length: 6 }, (_, i) => ({ connector: lib.connectors[1], from: 1, to: 2 + (i % 2) }));
+    const transitions = Array.from({ length: 11 }, (_, i) => ({ connector: lib.connectors[1], from: (i % 3) + 1, to: ((i + 1) % 3) + 1 }));
     const shots = cameraScript({ legs, transitions, lengthM: 234 }, lib, 2.2, zone, false);
     expect(totalDuration(shots)).toBeLessThanOrEqual(45);
     for (const s of shots) if (s.kind === 'follow' || s.kind === 'lift') expect(s.durationS).toBeGreaterThanOrEqual(1.5);
@@ -1218,7 +1269,7 @@ function clampPolar(p: Pose): Pose {
   return p.pos[1] - p.target[1] >= minDy ? p : { pos: [p.pos[0], p.target[1] + minDy, p.pos[2]], target: p.target };
 }
 
-function lengthOf(pts: Vec2[]): number {
+export function lengthOf(pts: Vec2[]): number {
   let L = 0;
   for (let i = 1; i < pts.length; i++) L += Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]);
   return L;
@@ -1398,9 +1449,9 @@ This task is data authoring. The coordinates are measured from the plan images i
   - Cross-check: the column bay spacing on f1, measured in px × `M_PER_PX`, is constant to within 5% across the building.
 
 - [ ] **Step 2: Register the floors.**
-  - On each of `basement`, `f2`–`f5`, find the same two stair/elevator cores as on f1 (the northeast and southwest cores are on every sheet).
-  - Fit a per-axis linear map to f1 pixels, `REG[level] = { ax, bx, ay, by }`, the same form as NCS.
-  - Accept when the core residual is ≤ 4 px.
+  - On each of `basement`, `f2`–`f5`, find at least 3 anchors that also appear on f1 and are not collinear: the stair/elevator cores present on every sheet, plus an outline corner that does not move between floors.
+  - Fit a per-axis linear map to f1 pixels by least squares, `REG[level] = { ax, bx, ay, by }`, the same form as NCS. With two anchors per axis the residual is always 0, so the check needs the third.
+  - Accept when the largest anchor residual is ≤ 4 px.
 
 - [ ] **Step 3: Write `scripts/trace-melville.mjs`.** Use this structure. The data arrays are filled from the images in Step 4.
 
@@ -1442,8 +1493,12 @@ const ZONES = { /* 3: { E: {...}, W: {...}, N: {...}, S: {...} } */ };
 const TAGS = [/* { id: 'f1-south-entrance', name: 'Floor 1, south entrance', floor: 1, px: [x, y] } */];
 
 // Places: number + department/room name only. Sources opened 2026-10-01 (research note §5 A, B; PDF pp. 9-10).
-// Rules: same number or same name in both sources -> keep the library-web row. Sub-basement (SB) and truncated
-// source names (E0319) are left out. Duplicate numbers in the PDF are merged (W5510) or dropped (E0305 housekeeping).
+// PDF rows were read with PyMuPDF word positions, keeping only the "Departments" and "Room #" columns (names and
+// phones were never extracted). Review ② re-checks every row against pp. 9-10.
+// Rules: same number or same name in both sources -> keep the library-web row (so PDF E2321 "Special Collections"
+// and N1000 "North Reading Room" give way to web E2320 and N1001). Sub-basement (SB0003) and truncated source names
+// (E0319) are left out. Duplicate numbers in the PDF are merged (W5510) or dropped (E0305 housekeeping).
+// Facility names that contain a donor's name ("William and Jane Knapp Alumni Center") are names of places, not people.
 const PLACES = [
   // floor 5 (emergency-plan-2014)
   ['E5450', 'Center for India Studies'], ['N5520', 'Center for Korean Studies'], ['S5410', 'Client Support'],
@@ -1495,7 +1550,6 @@ const sharedEdge = (a, b) => {
   if ((a.y1 === b.y0 || b.y1 === a.y0) && ox > 0) return { overlap: false, len: ox };
   return { overlap: false, len: 0 };
 };
-const gap = (a, b) => Math.hypot(Math.max(0, b.x0 - a.x1, a.x0 - b.x1), Math.max(0, b.y0 - a.y1, a.y0 - b.y1));
 
 function checkFloor(f) {
   const rs = f.walk.map((w) => ({ ...w, m: rectM(f.level, w.px) }));
@@ -1504,9 +1558,7 @@ function checkFloor(f) {
   for (const r of rs) {
     const wM = r.m.x1 - r.m.x0;
     const hM = r.m.y1 - r.m.y0;
-    if (r.door) {
-      if (Math.max(wM, hM) < 1) fail(`${r.id}: door narrower than 1 m`);
-    } else if (Math.min(wM, hM) < 1) fail(`${r.id}: narrower than 1 m after snapping`);
+    if (!r.door && Math.min(wM, hM) < 1) fail(`${r.id}: narrower than 1 m after snapping`);
   }
   for (let i = 0; i < rs.length; i++)
     for (let j = i + 1; j < rs.length; j++) {
@@ -1517,8 +1569,11 @@ function checkFloor(f) {
       if (e.overlap) fail(`${a.id} overlaps ${b.id}`);
       if (e.len > 0) {
         if (!allowed.has(key)) fail(`${a.id} touches ${b.id} but is not in OPENINGS (a wall would vanish)`);
+        // A door's width is the edge it shares with the room or corridor on either side.
+        if ((a.door || b.door) && e.len < 1) fail(`${a.id}/${b.id}: door opening narrower than 1 m`);
         used.add(key);
-      } else if (gap(a.m, b.m) > 0 && gap(a.m, b.m) < LATTICE) fail(`${a.id}/${b.id}: wall gap under 0.5 m`);
+      }
+      // No separate wall-gap check: every coordinate is on the 0.5 m lattice, so non-touching rectangles are >= 0.5 m apart.
     }
   for (const k of allowed) if (!used.has(k)) fail(`OPENINGS ${k} on floor ${f.level} does not touch`);
 }
@@ -1536,7 +1591,7 @@ function build() {
     floors: FLOORS.map((f) => ({
       level: f.level,
       name: f.level === 0 ? 'Basement' : `Floor ${f.level}`,
-      elevation: f.level * STOREY,
+      elevation: (f.level - 1) * STOREY, // slab top above ground: floor 1 at 0, basement at -STOREY
       height: STOREY,
       outline: [f.outline.map((p) => toM(f.level, p))],
       voids: (f.voids ?? []).map((v) => v.map((p) => toM(f.level, p))),
@@ -1569,7 +1624,7 @@ function build() {
 }
 
 const lib = build();
-if (process.argv.includes('--dump')) console.log(JSON.stringify(lib, null, 1));
+if (process.argv.includes('--dump')) console.log(JSON.stringify({ M_PER_PX, ORIGIN, REG, lib }, null, 1));
 else writeFileSync(new URL('../src/data/melville.json', import.meta.url), JSON.stringify(lib, null, 1) + '\n');
 ```
 
@@ -1593,14 +1648,11 @@ else writeFileSync(new URL('../src/data/melville.json', import.meta.url), JSON.s
 node scripts/trace-melville.mjs --dump > "$SCRATCH/mel.json"
 python3 - "$SCRATCH/mel.json" <<'EOF'
 # Draw the traced library back onto each plan image (inverse of toM, using M_PER_PX/ORIGIN/REG read from the script).
-import json, re, sys
+import json, sys
 from PIL import Image, ImageDraw
-src = open('scripts/trace-melville.mjs').read()
-M = float(re.search(r'const M_PER_PX = (?:/\*.*?\*/ )?([\d.]+)', src).group(1))
-ox, oy = map(float, re.search(r'const ORIGIN = (?:/\*.*?\*/ )?\[([\d.]+), ([\d.]+)\]', src).groups())
-reg = {int(k): dict(ax=float(a), bx=float(b), ay=float(c), by=float(d)) for k, a, b, c, d in
-       re.findall(r'(\d): \{ ax: ([-\d.]+), bx: ([-\d.]+), ay: ([-\d.]+), by: ([-\d.]+) \}', src)}
-lib = json.load(open(sys.argv[1]))
+dump = json.load(open(sys.argv[1]))
+M, (ox, oy), lib = dump['M_PER_PX'], dump['ORIGIN'], dump['lib']
+reg = {int(k): v for k, v in dump['REG'].items()}
 names = {0: 'basement', 1: 'f1', 2: 'f2', 3: 'f3', 4: 'f4', 5: 'f5'}
 COL = {'walkway': (0, 160, 0), 'lounge': (0, 120, 200), 'stairs': (200, 0, 0), 'elevator': (200, 0, 200)}
 for f in lib['floors']:
@@ -1632,13 +1684,13 @@ import type { Library } from './schema';
 import raw from './melville.json';
 
 /** Melville Library, generated by scripts/trace-melville.mjs (never hand-edit melville.json). */
-export const MELVILLE = raw as Library;
+export const MELVILLE = raw as unknown as Library; // JSON infers never[] for empty arrays
 ```
 
   In `package.json` scripts add `"trace:melville": "node scripts/trace-melville.mjs"`.
 
 - [ ] **Step 6: Generalise `src/data/venue.test.ts`.** Split the file's single `describe.each` in two.
-  - A Plan-level `describe.each` runs over `[...VENUES.map((e) => [e.venue.id, e.venue]), ['melville', MELVILLE]]`. It contains, unchanged: consecutive floors / ascending elevation, unique space ids, every space vertex inside its outline, every void inside its outline, and the room-number regex on `Space.name`.
+  - A Plan-level `describe.each<[string, Plan]>` runs over `[...VENUES.map((e): [string, Plan] => [e.venue.id, e.venue]), ['melville', MELVILLE]]`. It contains, unchanged: consecutive floors / ascending elevation, unique space ids, every space vertex inside its outline, every void inside its outline, and the room-number regex on `Space.name`.
   - A Venue-level `describe.each` runs over `VENUES` and contains, unchanged: unique beacon ids and namespace format, and beacons inside their floor outline.
   - The unique-ids test splits: `spaceIds` stays in the Plan block, and `beaconIds` plus the namespace check move to the Venue block.
   - Run `npx vitest run src/data/venue.test.ts`. Expected: the NCS assertions pass as before, and the Melville ones pass.
@@ -1697,8 +1749,20 @@ describe('melville data', () => {
       }
   });
 
+  it('keeps the key destinations and a sensible number of tags', () => {
+    const ids = new Set(M.places.map((p) => p.id));
+    for (const id of ['E2320', 'W1530', 'N1001', 'C1600', 'E3320']) expect(ids.has(id), id).toBe(true);
+    expect(M.places.length).toBeGreaterThanOrEqual(40);
+    expect(M.tags.length).toBeGreaterThanOrEqual(6);
+    expect(M.tags.length).toBeLessThanOrEqual(10);
+  });
+
   it('carries no phone numbers or person-like fields, ids canonical and unique', () => {
-    for (const s of strings(M)) expect(s).not.toMatch(/\d{3}[-.\s]\d{4}/);
+    for (const s of strings(M)) {
+      expect(s).not.toMatch(/\d{3}[-.\s]\d{4}/);
+      expect(s).not.toMatch(/\d{7,}/);
+      expect(s).not.toMatch(/@/);
+    }
     const ids = M.places.map((p) => p.id);
     expect(new Set(ids).size).toBe(ids.length);
     for (const p of M.places) {
@@ -1767,10 +1831,13 @@ export interface PlayCommand {
   kind: 'play' | 'skip';
 }
 
-export function Director({ shots, command, onShot, onDone }: {
+export function Director({ shots, command, onShot, stepAt, onStep, onDone }: {
   shots: Shot[];
   command: PlayCommand;
   onShot: (i: number) => void;
+  /** Which directions step a shot at progress u shows (null = none); onStep fires only when it changes. */
+  stepAt: (shot: number, u: number) => number | null;
+  onStep: (step: number | null) => void;
   onDone: () => void;
 }) {
   const camera = useThree((s) => s.camera);
@@ -1780,13 +1847,20 @@ export function Director({ shots, command, onShot, onDone }: {
   const playing = useRef(false);
   const lastTarget = useRef<[number, number, number] | null>(null);
   const shotIdx = useRef(-1);
+  const stepIdx = useRef<number | null>(null);
 
   const apply = (time: number) => {
     let acc = 0;
     for (let i = 0; i < shots.length; i++) {
       const d = shots[i].durationS;
       if (time <= acc + d || i === shots.length - 1) {
-        const p = poseAt(shots[i], d ? (time - acc) / d : 1);
+        const u = d ? (time - acc) / d : 1;
+        const p = poseAt(shots[i], u);
+        const st = stepAt(i, u);
+        if (st !== stepIdx.current) {
+          stepIdx.current = st;
+          onStep(st);
+        }
         camera.position.set(...p.pos);
         camera.lookAt(...p.target);
         lastTarget.current = p.target;
@@ -1821,15 +1895,17 @@ export function Director({ shots, command, onShot, onDone }: {
     }
     t.current = 0;
     shotIdx.current = -1;
+    stepIdx.current = null;
     playing.current = true;
     if (controls) controls.enabled = false;
     apply(0);
+    // Capture phase, so playback ends (and controls are re-enabled) before OrbitControls sees the same event.
     const stop = () => finish();
-    dom.addEventListener('pointerdown', stop);
-    dom.addEventListener('wheel', stop, { passive: true });
+    dom.addEventListener('pointerdown', stop, { capture: true });
+    dom.addEventListener('wheel', stop, { capture: true, passive: true });
     return () => {
-      dom.removeEventListener('pointerdown', stop);
-      dom.removeEventListener('wheel', stop);
+      dom.removeEventListener('pointerdown', stop, { capture: true });
+      dom.removeEventListener('wheel', stop, { capture: true });
       finish();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- a new command id or a new shot list restarts playback
@@ -1849,7 +1925,7 @@ export function Director({ shots, command, onShot, onDone }: {
 
 ```tsx
 import { Line } from '@react-three/drei';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import type { Library, Place, Tag } from '../data/schema';
 import type { Route } from '../engine/route';
@@ -1869,6 +1945,7 @@ export function RouteLine({ lib, route, tag, place, visible }: {
     if (!place) return null;
     return new THREE.ShapeGeometry(new THREE.Shape(place.zone.map(([x, y]) => new THREE.Vector2(x, y))));
   }, [place]);
+  useEffect(() => () => zoneGeo?.dispose(), [zoneGeo]);
   const zoneY = place ? (lib.floors.find((f) => f.level === place.floor)?.elevation ?? 0) * STACK_SCALE + 0.05 : 0;
   return (
     <>
@@ -1891,7 +1968,6 @@ export function RouteLine({ lib, route, tag, place, visible }: {
 }
 ```
 
-> `zoneGeo` must be disposed. Add `useEffect(() => () => zoneGeo?.dispose(), [zoneGeo]);`, matching the existing pattern in Building.tsx.
 
 - [ ] **Step 3: `src/finder/FinderPanel.tsx`.**
 
@@ -1920,14 +1996,14 @@ export function FinderPanel(p: {
   onAvoidStairs: (v: boolean) => void;
   status: 'need-tag' | 'need-place' | 'no-route' | 'ok';
   steps: Step[];
-  activeLeg: number | null;
+  activeStep: number | null;
   totalFt: number | null;
   onReplay: () => void;
   onSkip: () => void;
 }) {
   const unknown = p.tagId !== null && !p.tag;
   return (
-    <aside className="panel">
+    <aside className="panel finder">
       <h1>Room finder</h1>
       <p className="sub">Melville Library. Tap a tag (simulated), then search for a room.</p>
 
@@ -1976,7 +2052,7 @@ export function FinderPanel(p: {
         {p.status === 'ok' && (
           <>
             <ol className="steps">
-              {p.steps.map((s, i) => <li key={i} className={s.leg === p.activeLeg ? 'on' : ''}>{s.text}</li>)}
+              {p.steps.map((s, i) => <li key={i} className={i === p.activeStep ? 'on' : ''}>{s.text}</li>)}
             </ol>
             <p>Total: about {p.totalFt} ft</p>
             {p.avoidStairs && <p className="note">{STEP_FREE}</p>}
@@ -2009,7 +2085,7 @@ import { directions } from '../engine/directions';
 import { Router } from '../engine/route';
 import { searchPlaces } from '../engine/search';
 import { Building, STACK_SCALE } from '../scene/Building';
-import { cameraScript, MAX_POLAR } from './cameraScript';
+import { cameraScript, lengthOf, MAX_POLAR } from './cameraScript';
 import { Director, type PlayCommand } from './Director';
 import { FinderPanel } from './FinderPanel';
 import { RouteLine } from './RouteLine';
@@ -2035,6 +2111,7 @@ export default function Finder({ tagId, onTag }: { tagId: string | null; onTag: 
   const [avoidStairs, setAvoidStairs] = useState(false);
   const [command, setCommand] = useState<PlayCommand>({ id: 0, kind: 'play' });
   const [shotIdx, setShotIdx] = useState<number | null>(null);
+  const [activeStep, setActiveStep] = useState<number | null>(null);
 
   const tag = lib.tags.find((t) => t.id === tagId) ?? null;
   const place = lib.places.find((p) => p.id === placeId) ?? null;
@@ -2049,7 +2126,17 @@ export default function Finder({ tagId, onTag }: { tagId: string | null; onTag: 
   const status = !tag ? 'need-tag' : !place ? 'need-place' : route ? 'ok' : 'no-route';
   const shot = shotIdx === null ? null : shots[shotIdx];
   const focus = shot ? shot.focus : route ? route.legs[route.legs.length - 1].floor : tag ? tag.floor : null;
-  const activeLeg = shot && (shot.kind === 'follow' || shot.kind === 'lift') ? shot.leg : null;
+  const steps = dir?.steps ?? [];
+  const stepAt = (i: number, u: number): number | null => {
+    const sh = shots[i];
+    let k = -1;
+    if (sh.kind === 'follow') {
+      const s = u * lengthOf(sh.points);
+      k = steps.findIndex((st) => st.kind === 'walk' && st.leg === sh.leg && s >= st.s0 && s <= st.s1);
+    } else if (sh.kind === 'lift') k = steps.findIndex((st) => st.kind === 'floor' && st.leg === sh.leg);
+    else if (sh.kind === 'arrive') k = steps.length - 1;
+    return k < 0 ? null : k;
+  };
 
   return (
     <div className="app">
@@ -2061,7 +2148,17 @@ export default function Finder({ tagId, onTag }: { tagId: string | null; onTag: 
           <Building venue={lib} view={focus ?? 'all'} current={focus} />
           <RouteLine lib={lib} route={route} tag={tag} place={place} visible={(f) => focus === null || f <= focus} />
           <OrbitControls makeDefault target={HOME.target} maxPolarAngle={MAX_POLAR} />
-          <Director shots={shots} command={command} onShot={setShotIdx} onDone={() => setShotIdx(null)} />
+          <Director
+            shots={shots}
+            command={command}
+            onShot={setShotIdx}
+            stepAt={stepAt}
+            onStep={setActiveStep}
+            onDone={() => {
+              setShotIdx(null);
+              setActiveStep(null);
+            }}
+          />
         </Canvas>
       </div>
       <FinderPanel
@@ -2077,8 +2174,8 @@ export default function Finder({ tagId, onTag }: { tagId: string | null; onTag: 
         avoidStairs={avoidStairs}
         onAvoidStairs={setAvoidStairs}
         status={status}
-        steps={dir?.steps ?? []}
-        activeLeg={activeLeg}
+        steps={steps}
+        activeStep={activeStep}
         totalFt={dir?.totalFt ?? null}
         onReplay={() => setCommand((c) => ({ id: c.id + 1, kind: 'play' }))}
         onSkip={() => setCommand((c) => ({ id: c.id + 1, kind: 'skip' }))}
@@ -2093,18 +2190,16 @@ export default function Finder({ tagId, onTag }: { tagId: string | null; onTag: 
 - [ ] **Step 5: Append the finder styles to `src/styles.css`:**
 
 ```css
-.field { display: grid; gap: 4px; margin-top: 8px; }
-.panel input[type='search'], .panel select { width: 100%; padding: 6px 8px; font: inherit; border: 1px solid var(--line); border-radius: 4px; }
-.results { list-style: none; margin: 8px 0 0; padding: 0; }
-.results button { width: 100%; text-align: left; padding: 6px 8px; border: 0; border-bottom: 1px solid var(--line); background: none; font: inherit; cursor: pointer; }
-.results button.on, .steps li.on { background: #eef3fc; }
-.steps { padding-left: 20px; }
-.steps li { padding: 2px 4px; border-radius: 3px; }
-.warn { color: var(--warn); }
-.check { display: flex; gap: 6px; align-items: center; }
+.finder input[type='search'] { width: 100%; padding: 6px 8px; font: inherit; border: 1px solid var(--line); border-radius: 4px; }
+.finder .results { list-style: none; margin: 8px 0 0; padding: 0; }
+.finder .results button { width: 100%; text-align: left; padding: 6px 8px; border: 0; border-bottom: 1px solid var(--line); background: none; font: inherit; cursor: pointer; }
+.finder .results button.on, .finder .steps li.on { background: #eef3fc; }
+.finder .steps { padding-left: 20px; }
+.finder .steps li { padding: 2px 4px; border-radius: 3px; }
+.finder .check { display: flex; gap: 6px; align-items: center; }
 ```
 
-  Before adding the `.row` rule, check that it doesn't already exist: `grep -n '^\.row' src/styles.css`. If it is missing, add `.row { display: flex; gap: 8px; }`.
+  `.field`, `.warn`, `.row` and `select` already exist in styles.css and are used by the NCS panel: reuse them, never redefine them. Every new rule is scoped under `.finder` so the NCS panel cannot change.
 
 - [ ] **Step 6: Typecheck.** Run `npx tsc --noEmit`. Expected: no errors. Finder is not mounted yet; Task 9 mounts it.
 
@@ -2195,14 +2290,20 @@ export default function Root() {
 - [ ] **Step 4: Build and check the bundle.** Run:
 
 ```bash
-npm test && npm run build && ls dist/assets && ! ls -R dist | grep -Ei '\.(png|pdf)$' && grep -l '"melville"' dist/assets/*.js
+npm test && npm run build
+ls -R dist | grep -Ei '\.(png|pdf)$' && echo "FAIL: plan image in dist"
+grep -l 'Melville Library Emergency Plan' dist/assets/*.js
+grep -l 'Melville Library Emergency Plan' dist/assets/index-*.js && echo "FAIL: Melville data in the entry chunk"
 ```
 
   Expected:
   - tests green;
   - build green;
   - no `.png`/`.pdf` in `dist`;
-  - the Melville data is in a separate chunk from the main `index-*.js`. The final `grep -l` must not list the `index-*.js` entry chunk.
+  - no `FAIL` line;
+  - the first `grep -l` lists exactly one non-index chunk, the lazily loaded Finder chunk.
+
+  The credit string is matched rather than `"melville"`, because the minifier writes ids with backticks.
 
 - [ ] **Step 5: Manual run.** Start `npm run dev` and use the `run` skill (or a browser) to check each of these. Record what you saw in the commit message.
   1. `/` shows the NCS tab. Its layout is the same as before on desktop and at 390 px width, and the simulation runs.
