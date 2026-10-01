@@ -1,6 +1,6 @@
 # M7 design: Melville Library room finder (NFC tag demo, simulated)
 
-Status: rev 4 (2026-10-01), revised after review ① and two re-checks (Sonnet + Fable). Task T4. The decisions in §2 are the owner's, quoted
+Status: rev 5 (2026-10-01), revised after review ① and two re-checks (Sonnet + Fable). Task T4. The decisions in §2 are the owner's, quoted
 verbatim. Everything else is the implementer's design.
 
 ## 1. Goal and success criteria
@@ -158,7 +158,9 @@ polygon and outside every void. The trace makes this exact:
   that are not in the list are closer than 0.5 m. A wall can therefore not silently become a doorway, even after snapping.
 - **Doors.** A door through a wall gap is a small `walkway` threshold polygon spanning the gap. It shares an edge with the
   room and with the corridor, and both pairs are listed in `OPENINGS`. Room and corridor polygons stay rectangular.
-- **Width.** Every walkable polygon is at least 1 m wide after snapping. The trace script asserts this.
+- **Width.** After snapping, every corridor and open area is at least 1 m in its narrower dimension. A threshold
+  polygon is exempt from that, because its depth across the wall is the gap itself (0.5 m). Instead, its edge along the
+  gap, which is the door width, must be at least 1 m. The trace script asserts both rules.
 - **Seams.** `melville.test` catches any seam that remains, because a place becomes unreachable.
 
 The snap moves geometry by at most 0.25 m per axis, which is within the plans' coarse tracing. Grids are built lazily per floor
@@ -241,8 +243,8 @@ mapping as NCS).
    - The camera sits 12 m behind and 8 m above `pointAt(s)`, along the direction from `pointAt(s − 4 m)` to
      `pointAt(s + 4 m)`. Because it looks ahead and behind, the view turns smoothly at corners. No curve object is needed.
 
-      - If the two points are less than 0.5 m apart (the leg is short or doubles back), the camera falls back to the
-     direction of the current segment.
+      - Fallback: if those two points are less than 0.5 m apart (the leg is short or doubles back), the camera uses the
+     direction of the current segment instead.
 
    Duration is the leg length ÷ 6 m/s, clamped to 2–8 s. The step list highlights the step that `s` is in. Focus is the
    leg's floor.
