@@ -937,6 +937,9 @@ export function directions(route: Route, plan: Plan, startName: string, place: P
     let open: { verb: string; meters: number; mid: Vec2; s0: number } | null = null;
     let heading: Vec2 | null = null;
     let s = 0;
+    // The first compass word comes from the first real segment, not from a doorway jog.
+    const k = pts.findIndex((q, j) => j > 0 && Math.hypot(q[0] - pts[j - 1][0], q[1] - pts[j - 1][1]) >= SHORT);
+    const firstDir: Vec2 | null = k > 0 ? [pts[k][0] - pts[k - 1][0], pts[k][1] - pts[k - 1][1]] : null;
     const close = () => {
       if (!open) return;
       const name = walkwayName(plan, leg.floor, open.mid);
@@ -948,7 +951,7 @@ export function directions(route: Route, plan: Plan, startName: string, place: P
       const m = Math.hypot(d[0], d[1]);
       const mid: Vec2 = [(pts[i][0] + pts[i - 1][0]) / 2, (pts[i][1] + pts[i - 1][1]) / 2];
       if (!open) {
-        const head = compass(d[0], d[1]);
+        const head = compass(...(firstDir ?? d));
         const verb =
           li === 0
             ? `Start at ${startName}. Head ${head}`
@@ -1444,6 +1447,7 @@ This task is data authoring. The coordinates are measured from the plan images i
     `curl -s 'https://overpass-api.de/api/interpreter?data=[out:json];way(54723529);out geom;'`
   - Project its nodes to local meters (equirectangular at lat 40.9154: x = Δlon·cos(lat)·111320, y = Δlat·110540).
   - Pick 4–6 matching outline corners on `f1.png` (pixels) and on the OSM polygon.
+  - Install PyMuPDF and numpy into the session scratchpad only (never the repo): `python3 -m pip install -q --target "$SCRATCH/pylib" pymupdf numpy`, then run scratch scripts with `PYTHONPATH="$SCRATCH/pylib"`. The same install serves the PDF cross-check of PLACES in Step 4.
   - Fit a 2D similarity transform (Umeyama/Procrustes), using a scratch Python script in the session scratchpad. Record `M_PER_PX` (the isotropic scale), the rotation (degrees) and the RMS residual (meters).
   - Accept when the RMS is ≤ 1.5 m and `M_PER_PX` is between 0.115 and 0.135.
   - Cross-check: the column bay spacing on f1, measured in px × `M_PER_PX`, is constant to within 5% across the building.
@@ -1641,8 +1645,9 @@ else writeFileSync(new URL('../src/data/melville.json', import.meta.url), JSON.s
   3. Add the `ZONES[level][wing]` rectangles (each wing's office band) and their entry points on the wing corridor.
   4. Add `CONNECTORS` once, from f1 pixels, after registering all floors.
   5. Add `TAGS`: 6–10 at entrances and elevator lobbies across floors 1–3 and the basement.
-  6. Run `node scripts/trace-melville.mjs` until no check fails.
-  7. Draw the overlay and look at it. Use this scratch helper; it is not committed and its outputs stay in the gitignored folder:
+  6. Cross-check every PLACES row against PDF pp. 9–10, using the Departments and Room # columns only (PyMuPDF word positions, as in the PLACES comment). Never print or copy the name and phone columns.
+  7. Run `node scripts/trace-melville.mjs` until no check fails.
+  8. Draw the overlay and look at it. Use this scratch helper; it is not committed and its outputs stay in the gitignored folder:
 
 ```bash
 node scripts/trace-melville.mjs --dump > "$SCRATCH/mel.json"
@@ -2333,6 +2338,7 @@ git commit -m "feat: top tabs for the NCS demo and the Melville room finder"
 - [ ] **Step 1: README.**
   - Add a "Room finder (Library)" section: what the tab does, the `#tag=` link format (`https://<site>/#tag=f1-south-entrance`), the notes sentence verbatim, and the credit sentence verbatim.
   - Add `npm run trace:melville` to the command list.
+  - In the link example, use a tag id that exists in `src/data/melville.json` (not a guessed one).
 - [ ] **Step 2: HANDOFF.**
   - Add a short M7 section: design path, plan path, data generator, the open caveats (2014 plans, approximate places, STOREY assumption).
 - [ ] **Step 3: Verify.** Run `npm test && npm run build`. Expected: green.
