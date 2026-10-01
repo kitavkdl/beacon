@@ -22,7 +22,7 @@ honest about accuracy (simulated numbers are labeled as such).
   "North" = plan-up. True north is ~9° counter-clockwise from plan-up (OSM way 529707497); not used in code.
 - **Geometry source**: 2015 plans by Mitchell | Giurgola (SBU CS building page; the live URLs 404 as of
   2026-09-30, Wayback snapshots 2015-06-22 work). Scale bar: 88.5 px = 16 ft → 0.0551 m/px, all floors.
-- **Names**: only labels printed on the plan (e.g. "RVG Off.", "Conf. Room"). No room numbers exist on the plan; none are invented.
+- **Names** (NCS): only labels printed on the plan (e.g. "RVG Off.", "Conf. Room"). No room numbers exist on the plan; none are invented. Melville follows its own label rule under "Decisions for M7".
 - **Categories**: IMDF unit categories (`office`, `laboratory`, `classroom`, `conferenceroom`, `walkway`, `restroom`, `stairs`, `elevator`, `mechanical`, `storage`, `lounge`, `opentobelow`) so an IMDF export stays a mapping, not a redesign.
 - **Radio model (simulator only)**: log-distance path loss (n = 2.2, RSSI@1m = −59 dBm), Gaussian noise σ (default 4 dB),
   10% packet drop, 18 dB per floor slab crossed — reduced to 3 dB where the straight path crosses the slab inside an atrium void.
@@ -35,9 +35,9 @@ honest about accuracy (simulated numbers are labeled as such).
 
 - **Scope**: Routing and a second building are in scope **only for the Melville room finder**. The NCS beacon demo and M6 are unchanged.
 - **Geometry source**: Melville Library Emergency Plan (SBU Libraries, 2014-11-24), PDF pages 3–8 (basement, floors 1–5). No scale bar; calibrated to OSM way 54723529. Images stay out of git and the bundle; traced coordinates ship with a credit.
-- **Room labels**: room numbers and names from the same PDF's directory table and the library website, placed at an approximate wing/floor zone and labeled "approximate location". Numbers without an opened official source are left out. No staff names or phone numbers.
+- **Room labels** (replaces "Names" for Melville only): room numbers and names from the same PDF's directory table and the library website, placed at an approximate wing/floor zone and labeled "approximate location". Numbers without an opened official source are left out. No staff names or phone numbers.
 - **Start point**: an NFC tag (simulated). A real tag or QR code would carry `…/#tag=<id>`; the fragment is never sent to a server.
-- **Units**: stored in meters, shown in feet.
+- **Units**: stored in meters, shown in feet as "about N ft" (no scale bar on the plans; calibrated to OSM).
 
 ## Out of scope (for now)
 Routing/turn-by-turn and other buildings (except the M7 Melville room finder), wall attenuation, fingerprinting, barometer fusion, native apps, real NFC reading.
