@@ -19,6 +19,8 @@ const EYE = 1;
 const SPEED = 6;
 const CAP = 45;
 const MIN_SHOT = 1.5;
+/** Offset (m, each axis) of the final wide view from the destination: about 50 m away. */
+const WIDE = 29;
 
 export type Shot =
   | { kind: 'orbit' | 'arrive'; durationS: number; focus: number; start: Pose; center: V3 }
@@ -165,8 +167,11 @@ export function cameraScript(route: Route, plan: Plan, stackScale: number, zone:
       shots.push({ kind: 'follow', durationS: Math.min(8, Math.max(2, lengthOf(leg.points) / SPEED)), focus: leg.floor, leg: i, points: leg.points, y: elev(leg.floor) });
   });
 
+  // Pull back from the walker's view to a wide view of the destination zone, then circle it from there.
   const endPose = followPose(last.points, lengthOf(last.points), elev(last.floor));
-  shots.push({ kind: 'arrive', durationS: 5, focus: last.floor, start: endPose, center });
+  const wide = clampPolar({ pos: [center[0] + WIDE, center[1] + WIDE, center[2] + WIDE], target: center });
+  shots.push({ kind: 'move', durationS: 2, focus: last.floor, from: endPose, to: wide });
+  shots.push({ kind: 'arrive', durationS: 5, focus: last.floor, start: wide, center });
 
   if (totalDuration(shots) > CAP) {
     const fixed = shots.filter((s) => s.kind !== 'follow' && s.kind !== 'lift').reduce((a, s) => a + s.durationS, 0);

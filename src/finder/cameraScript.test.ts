@@ -23,7 +23,7 @@ const twoFloors: Route = {
 describe('cameraScript', () => {
   it('orders the shots with the right focus floors', () => {
     const shots = cameraScript(twoFloors, lib, 2.2, zone, false);
-    expect(shots.map((s) => `${s.kind}:${s.focus}`)).toEqual(['orbit:1', 'move:1', 'follow:1', 'lift:3', 'follow:3', 'arrive:3']);
+    expect(shots.map((s) => `${s.kind}:${s.focus}`)).toEqual(['orbit:1', 'move:1', 'follow:1', 'lift:3', 'follow:3', 'move:3', 'arrive:3']);
   });
 
   it('is continuous and respects the polar limit everywhere', () => {
@@ -38,6 +38,13 @@ describe('cameraScript', () => {
     [14, 1, 0].forEach((v, i) => expect(p.target[i]).toBeCloseTo(v));
   });
 
+  it('ends on a wide view of the destination, not a close-up of the slab', () => {
+    const shots = cameraScript(twoFloors, lib, 2.2, zone, false);
+    const end = poseAt(shots[shots.length - 1], 1);
+    const dist = Math.hypot(end.pos[0] - end.target[0], end.pos[1] - end.target[1], end.pos[2] - end.target[2]);
+    expect(dist).toBeGreaterThanOrEqual(35);
+  });
+
   it('caps a long route at 45 s', () => {
     const legs = Array.from({ length: 12 }, (_, i) => ({ floor: (i % 3) + 1, points: [[0.25, 5.25], [19.75, 5.25]] as [number, number][] }));
     const transitions = Array.from({ length: 11 }, (_, i) => ({ connector: lib.connectors[1], from: (i % 3) + 1, to: ((i + 1) % 3) + 1 }));
@@ -46,9 +53,9 @@ describe('cameraScript', () => {
     for (const s of shots) if (s.kind === 'follow' || s.kind === 'lift') expect(s.durationS).toBeGreaterThanOrEqual(1.5);
   });
 
-  it('start = destination: orbit, move, arrive only', () => {
+  it('start = destination: no follow or lift shots', () => {
     const shots = cameraScript({ legs: [{ floor: 1, points: [[3.25, 5.25]] }], transitions: [], lengthM: 0 }, lib, 2.2, zone, false);
-    expect(shots.map((s) => s.kind)).toEqual(['orbit', 'move', 'arrive']);
+    expect(shots.map((s) => s.kind)).toEqual(['orbit', 'move', 'move', 'arrive']);
   });
 
   it('reduced motion is one still shot on the destination floor', () => {

@@ -35,7 +35,7 @@ export function FinderPanel(p: {
 
       <section>
         <h2>You are here</h2>
-        <p>{p.tag ? `${p.tag.name} (${floorName(p.tag.floor)})` : 'No tag yet'}</p>
+        <p>{p.tag ? p.tag.name : 'No tag yet'}</p>
         <label className="field">
           Simulate a tag tap
           <select value={p.tag?.id ?? ''} onChange={(e) => p.onTag(e.target.value)}>

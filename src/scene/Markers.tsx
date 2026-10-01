@@ -1,5 +1,6 @@
 // Beacons, true position (simulation only), estimated position with trail and the current space label.
 import { Html, Line } from '@react-three/drei';
+import { useThree } from '@react-three/fiber';
 import type { Plan, Venue } from '../data/schema';
 import type { Fix } from '../engine/locator';
 import type { Pose } from '../engine/simulator';
@@ -41,6 +42,10 @@ export function Truth({ venue, pose }: { venue: Venue; pose: Pose }) {
 export function Estimate({ venue, fix, trail }: { venue: Venue; fix: Fix; trail: Fix[] }) {
   // Trail only on the current floor; a floor switch starts a new trail visually.
   const pts = trail.filter((t) => t.floor === fix.floor).map((t) => world(venue, t.floor, t.x, t.y, 0.15));
+  // Pin the label's DOM parent. By default drei's Html switches from the canvas wrapper to the event target once
+  // events connect, which re-creates its React root mid-commit; when the canvas later unmounts, the label is
+  // removed twice (NotFoundError: removeChild). Pinned, the root is created once.
+  const parent = useThree((s) => s.gl.domElement.parentNode) as HTMLElement | null;
   return (
     <>
       {pts.length > 1 && <Line points={pts} color="#2d6cdf" lineWidth={2} transparent opacity={0.6} />}
@@ -50,7 +55,7 @@ export function Estimate({ venue, fix, trail }: { venue: Venue; fix: Fix; trail:
         <meshBasicMaterial color="#2d6cdf" transparent depthTest={false} />
       </mesh>
       {fix.spaceName && (
-        <Html position={world(venue, fix.floor, fix.x, fix.y, 3)} center className="space-label">
+        <Html position={world(venue, fix.floor, fix.x, fix.y, 3)} center className="space-label" portal={{ current: parent! }}>
           {fix.spaceName}
         </Html>
       )}
