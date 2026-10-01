@@ -1,6 +1,6 @@
 // Beacons, true position (simulation only), estimated position with trail and the current space label.
 import { Html, Line } from '@react-three/drei';
-import type { Venue } from '../data/schema';
+import type { Plan, Venue } from '../data/schema';
 import type { Fix } from '../engine/locator';
 import type { Pose } from '../engine/simulator';
 import { STACK_SCALE } from './Building';
@@ -9,7 +9,7 @@ const BEACON_H = 2.5;
 const MARK_H = 0.6;
 
 /** Venue (floor, x, y) + height above that floor -> world position (floors drawn with STACK_SCALE). */
-export function world(venue: Venue, floor: number, x: number, y: number, h = 0): [number, number, number] {
+export function world(venue: Plan, floor: number, x: number, y: number, h = 0): [number, number, number] {
   const e = venue.floors.find((f) => f.level === floor)?.elevation ?? 0;
   return [x, e * STACK_SCALE + h, -y];
 }

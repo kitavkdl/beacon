@@ -2,7 +2,7 @@
 // and "up" is local +z; world position is (x, elevation, -y).
 import { useEffect, useMemo } from 'react';
 import * as THREE from 'three';
-import type { Category, Floor, Polygon, Venue } from '../data/schema';
+import type { Category, Floor, Plan, Polygon } from '../data/schema';
 import { pointInPolygon } from '../engine/geometry';
 
 export const CATEGORY_COLOR: Record<Category, string> = {
@@ -113,7 +113,7 @@ export function floorOpacity(view: FloorView, level: number, current: number | n
   return level === focus ? 1 : 0.12;
 }
 
-export function Building({ venue, view, current }: { venue: Venue; view: FloorView; current: number | null }) {
+export function Building({ venue, view, current }: { venue: Plan; view: FloorView; current: number | null }) {
   return (
     <>
       {venue.floors.map((f) => {
