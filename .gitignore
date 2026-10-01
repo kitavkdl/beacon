@@ -1,6 +1,6 @@
 node_modules
 dist
 .vercel
-# Floor-plan images are © Mitchell | Giurgola; fetch them per docs/FLOORPLAN_TRACING.md
+# Floor-plan images (© Mitchell | Giurgola for NCS; SBU Libraries plans for Melville); fetch them per docs/FLOORPLAN_TRACING.md
 docs/floorplans/
 .worktrees/

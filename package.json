@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "bench": "vite-node scripts/bench.ts",
-    "trace": "node scripts/trace-ncs.mjs"
+    "trace": "node scripts/trace-ncs.mjs",
+    "trace:melville": "node scripts/trace-melville.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",

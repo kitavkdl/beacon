@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { pointInPolygon } from '../engine/geometry';
-import type { Polygon, Vec2 } from './schema';
+import { MELVILLE } from './library';
+import type { Plan, Polygon, Vec2 } from './schema';
 import { VENUES } from './venues';
 
 // Traces follow wall centrelines, so shared edges sit exactly on the outline.
@@ -19,16 +20,38 @@ function nearOrInside(p: Vec2, polys: Polygon[]): boolean {
   );
 }
 
-describe.each(VENUES.map((e) => [e.venue.id, e.venue] as const))('%s venue data', (_id, V) => {
+const PLANS: [string, Plan][] = [...VENUES.map((e): [string, Plan] => [e.venue.id, e.venue]), ['melville', MELVILLE]];
+
+describe.each<[string, Plan]>(PLANS)('%s plan data', (_id, V) => {
   it('has consecutive floors in ascending elevation', () => {
     const levels = V.floors.map((f) => f.level);
     expect(levels).toEqual(levels.map((_, i) => levels[0] + i));
     for (let i = 1; i < V.floors.length; i++) expect(V.floors[i].elevation).toBeGreaterThan(V.floors[i - 1].elevation);
   });
 
-  it('has unique space and beacon ids', () => {
+  it('has unique space ids', () => {
     const spaceIds = V.floors.flatMap((f) => f.spaces.map((s) => s.id));
     expect(new Set(spaceIds).size).toBe(spaceIds.length);
+  });
+
+  it('keeps every space vertex inside its floor outline', () => {
+    const bad: string[] = [];
+    for (const f of V.floors)
+      for (const s of f.spaces) for (const p of s.polygon) if (!nearOrInside(p, f.outline)) bad.push(`${s.id} ${p}`);
+    expect(bad).toEqual([]);
+  });
+
+  it('keeps every void inside its floor outline', () => {
+    for (const f of V.floors) for (const v of f.voids) for (const p of v) expect(nearOrInside(p, f.outline)).toBe(true);
+  });
+
+  it('never uses room numbers in space names (they live in places, if anywhere)', () => {
+    for (const f of V.floors) for (const s of f.spaces) expect(s.name).not.toMatch(/\b\d{3,4}[A-Z]?\b/);
+  });
+});
+
+describe.each(VENUES.map((e) => [e.venue.id, e.venue] as const))('%s venue beacons', (_id, V) => {
+  it('has unique beacon ids and a valid namespace', () => {
     const beaconIds = V.beacons.map((b) => b.id);
     expect(new Set(beaconIds).size).toBe(beaconIds.length);
     for (const id of beaconIds) expect(id).toMatch(/^[0-9a-f]{12}$/);
@@ -43,18 +66,4 @@ describe.each(VENUES.map((e) => [e.venue.id, e.venue] as const))('%s venue data'
     }
   });
 
-  it('keeps every space vertex inside its floor outline', () => {
-    const bad: string[] = [];
-    for (const f of V.floors)
-      for (const s of f.spaces) for (const p of s.polygon) if (!nearOrInside(p, f.outline)) bad.push(`${s.id} ${p}`);
-    expect(bad).toEqual([]);
-  });
-
-  it('keeps every void inside its floor outline', () => {
-    for (const f of V.floors) for (const v of f.voids) for (const p of v) expect(nearOrInside(p, f.outline)).toBe(true);
-  });
-
-  it('never uses room numbers in names (the plans have none)', () => {
-    for (const f of V.floors) for (const s of f.spaces) expect(s.name).not.toMatch(/\b\d{3,4}[A-Z]?\b/);
-  });
 });
