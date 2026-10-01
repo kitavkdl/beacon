@@ -1,7 +1,7 @@
 // Traced Melville Library geometry (2014 Emergency Plan, SBU Libraries), plan pixels -> library meters.
 // Procedure and calibration: docs/FLOORPLAN_TRACING.md "Melville Library".
 //   node scripts/trace-melville.mjs          -> writes src/data/melville.json
-//   node scripts/trace-melville.mjs --dump   -> prints snapped polygons in f1 pixels (for overlay checks)
+//   node scripts/trace-melville.mjs --dump   -> prints { M_PER_PX, ORIGIN, REG, lib } (library in meters; for overlay checks)
 import { writeFileSync } from 'node:fs';
 
 // Reference sheet = floor 3 (p5): its outline matches OSM way 54723529 (IoU 0.98). Similarity fit on that outline:
@@ -98,21 +98,19 @@ const FLOORS = [
       rectPx(345, 630, 880, 1180), rectPx(880, 630, 1010, 1345), rectPx(270, 1150, 345, 1180), rectPx(280, 1180, 815, 1440),
       rectPx(815, 1180, 880, 1345), rectPx(880, 1345, 925, 1400), rectPx(210, 1150, 270, 1180), rectPx(225, 1180, 280, 1195),
     ],
+    // Centre is "EXISTING ROOF"; the band north of it reads "SKYLIGHT BELOW".
+    voids: [rectPx(345, 615, 875, 1155)],
     walk: [
       W('w5', 'West corridor, floor 5', 'walkway', 320, 510, 342, 1160),
       W('nwl5', 'Northwest lobby, floor 5', 'walkway', 320, 495, 405, 510),
       W('nws5', 'Northwest stairs', 'stairs', 345, 458, 375, 495),
       W('nwe5', 'Northwest elevator', 'elevator', 382, 458, 402, 495),
       W('nr5', 'North corridor, floor 5', 'walkway', 405, 490, 935, 505),
-      W('nrs5', 'Stacks corridor, floor 5', 'walkway', 342, 615, 878, 630),
       W('e5', 'East corridor, floor 5', 'walkway', 878, 615, 897, 1345),
       W('nee5', 'Northeast elevators', 'elevator', 897, 625, 925, 675),
-      W('st5', 'Main stacks, floor 5', 'lounge', 350, 640, 800, 1150),
       W('s5', 'South corridor, floor 5', 'walkway', 270, 1160, 878, 1180),
       W('sws5', 'Southwest stairs', 'stairs', 225, 1150, 270, 1195),
       W('ses5', 'Southeast stairs', 'stairs', 880, 1345, 925, 1400),
-      D('d5n', 600, 630, 615, 640),
-      D('d5s', 500, 1150, 515, 1160),
     ],
   },
   {
@@ -122,6 +120,8 @@ const FLOORS = [
       rectPx(335, 560, 905, 1130), rectPx(905, 560, 1015, 1320), rectPx(265, 1130, 820, 1405), rectPx(820, 1130, 905, 1330),
       rectPx(885, 1330, 930, 1375), rectPx(195, 1130, 265, 1160),
     ],
+    // Centre is "ROOF" around a "MECH. EQP. RM" penthouse: no floor-4 stacks.
+    voids: [rectPx(340, 605, 800, 1120)],
     walk: [
       W('w4', 'West corridor, floor 4', 'walkway', 262, 460, 280, 1130),
       W('nwl4', 'Northwest lobby, floor 4', 'walkway', 262, 445, 410, 460),
@@ -145,12 +145,6 @@ const FLOORS = [
       W('ssr4', 'South stairs (east)', 'stairs', 610, 1350, 645, 1385),
       W('ser4', 'South elevator (east)', 'elevator', 652, 1350, 680, 1385),
       W('ses4', 'Southeast stairs', 'stairs', 885, 1330, 930, 1375),
-      W('stw4', 'Main stacks, floor 4', 'lounge', 340, 605, 540, 1120),
-      W('stn4', 'Main stacks, floor 4', 'lounge', 540, 605, 710, 660),
-      W('sts4', 'Main stacks, floor 4', 'lounge', 540, 1050, 710, 1120),
-      W('ste4', 'Main stacks, floor 4', 'lounge', 710, 605, 800, 1120),
-      D('d4s1', 450, 1120, 465, 1130),
-      D('d4s2', 760, 1120, 775, 1130),
     ],
   },
   {
@@ -160,7 +154,8 @@ const FLOORS = [
       rectPx(305, 595, 880, 1140), rectPx(880, 560, 1005, 1340), rectPx(200, 1140, 870, 1405), rectPx(870, 1140, 880, 1340),
       rectPx(870, 1340, 915, 1390),
     ],
-    voids: [rectPx(525, 400, 785, 480)],
+    // Atrium over floor 1, and the strip printed "OPEN - UPPER PART OF GALLERIA" east of the stacks.
+    voids: [rectPx(525, 400, 785, 480), rectPx(805, 605, 860, 1130)],
     walk: [
       W('w2', 'West corridor, floor 2', 'walkway', 285, 445, 305, 1140),
       W('nwl2', 'Northwest lobby, floor 2', 'walkway', 305, 445, 375, 460),
@@ -178,7 +173,7 @@ const FLOORS = [
       W('nee2', 'Northeast elevators', 'elevator', 880, 600, 915, 630),
       W('stw2', 'Main stacks, floor 2', 'lounge', 415, 605, 555, 1130),
       W('stb2', 'Main stacks, floor 2', 'lounge', 555, 1050, 650, 1130),
-      W('ste2', 'Main stacks, floor 2', 'lounge', 650, 605, 850, 1130),
+      W('ste2', 'Main stacks, floor 2', 'lounge', 650, 605, 800, 1130),
       W('s2', 'South corridor, floor 2', 'walkway', 245, 1140, 865, 1160),
       W('sws2', 'Southwest stairs', 'stairs', 205, 1125, 245, 1160),
       W('sr2', 'South reading area, floor 2', 'lounge', 245, 1160, 700, 1355),
@@ -189,7 +184,6 @@ const FLOORS = [
       W('ses2', 'Southeast stairs', 'stairs', 870, 1340, 910, 1390),
       D('d2n1', 480, 595, 495, 605),
       D('d2n2', 760, 595, 775, 605),
-      D('d2e', 850, 900, 865, 915),
       D('d2s', 500, 1130, 515, 1140),
     ],
   },
@@ -200,6 +194,8 @@ const FLOORS = [
       rectPx(320, 567, 880, 1150), rectPx(880, 567, 975, 1330), rectPx(247, 1150, 795, 1405), rectPx(795, 1150, 880, 1330),
       rectPx(857, 1330, 905, 1370),
     ],
+    // "ROOF" west of the stacks, and "OPEN - UPPER PART OF GALLERIA" east of them.
+    voids: [rectPx(322, 600, 415, 1110), rectPx(805, 600, 858, 1110)],
     walk: [
       W('w3', 'West corridor, floor 3', 'walkway', 293, 465, 315, 1120),
       W('nwl3', 'Northwest lobby, floor 3', 'walkway', 293, 449, 380, 465),
@@ -223,13 +219,11 @@ const FLOORS = [
       W('ssr3', 'South stairs (east)', 'stairs', 603, 1345, 630, 1375),
       W('ser3', 'South elevator (east)', 'elevator', 637, 1345, 657, 1375),
       W('ses3', 'Southeast stairs', 'stairs', 862, 1330, 900, 1370),
-      W('stw3', 'Main stacks, floor 3', 'lounge', 325, 600, 555, 1110),
+      W('stw3', 'Main stacks, floor 3', 'lounge', 420, 600, 555, 1110),
       W('stn3', 'Main stacks, floor 3', 'lounge', 555, 600, 665, 670),
       W('sts3', 'Main stacks, floor 3', 'lounge', 555, 1045, 665, 1110),
-      W('ste3', 'Main stacks, floor 3', 'lounge', 665, 600, 850, 1110),
-      D('d3w', 315, 900, 325, 915),
+      W('ste3', 'Main stacks, floor 3', 'lounge', 665, 600, 800, 1110),
       D('d3s', 700, 1110, 715, 1120),
-      D('d3e', 850, 890, 862, 905),
       D('d3n', 630, 567, 645, 600),
     ],
   },
@@ -246,22 +240,20 @@ const OPENINGS = {
     ['sl1', 'sel1'], ['sl1', 'ssl1'], ['sl1', 'ssr1'], ['sl1', 'ser1'], ['sl1', 'ses1'],
   ],
   5: [
-    ['w5', 'nwl5'], ['nwl5', 'nws5'], ['nwl5', 'nwe5'], ['nwl5', 'nr5'], ['w5', 'nrs5'], ['nrs5', 'e5'], ['e5', 'nee5'],
-    ['w5', 's5'], ['s5', 'sws5'], ['s5', 'e5'], ['e5', 'ses5'], ['d5n', 'nrs5'], ['d5n', 'st5'], ['d5s', 'st5'], ['d5s', 's5'],
+    ['w5', 'nwl5'], ['nwl5', 'nws5'], ['nwl5', 'nwe5'], ['nwl5', 'nr5'], ['e5', 'nee5'],
+    ['w5', 's5'], ['s5', 'sws5'], ['s5', 'e5'], ['e5', 'ses5'],
   ],
   4: [
     ['w4', 'nwl4'], ['nwl4', 'nws4'], ['nwl4', 'nwe4'], ['nwl4', 'nrw4'], ['nrw4', 'nrt4'], ['nrw4', 'nrs4'],
     ['nrt4', 'nre4'], ['nre4', 'nrs4'], ['nrt4', 'nel4'], ['nrt4', 'nsl4'], ['nrt4', 'nsr4'], ['nrt4', 'ner4'],
     ['nrs4', 'e4'], ['e4', 'nee4'], ['w4', 's4'], ['s4', 'sws4'], ['s4', 'sr4'], ['s4', 'e4'], ['sr4', 'sel4'],
     ['sr4', 'ssl4'], ['sr4', 'ser4'], ['sr4', 'ssr4'], ['e4', 'ses4'],
-    ['stw4', 'stn4'], ['stw4', 'sts4'], ['stn4', 'ste4'], ['sts4', 'ste4'],
-    ['d4s1', 'stw4'], ['d4s1', 's4'], ['d4s2', 'ste4'], ['d4s2', 's4'],
   ],
   2: [
     ['w2', 'nwl2'], ['nwl2', 'nws2'], ['nwl2', 'nwe2'], ['nwl2', 'nb2'], ['na2', 'nb2'], ['na2', 'nc2'], ['nb2', 'nd2'],
     ['nc2', 'nd2'], ['na2', 'nel2'], ['na2', 'nsl2'], ['na2', 'nsr2'], ['na2', 'ner2'], ['nd2', 'e2'], ['e2', 'nee2'],
     ['stw2', 'stb2'], ['stb2', 'ste2'], ['d2n1', 'nd2'], ['d2n1', 'stw2'], ['d2n2', 'nd2'], ['d2n2', 'ste2'],
-    ['d2e', 'ste2'], ['d2e', 'e2'], ['d2s', 'stw2'], ['d2s', 's2'], ['w2', 's2'], ['s2', 'e2'], ['s2', 'sws2'],
+    ['d2s', 'stw2'], ['d2s', 's2'], ['w2', 's2'], ['s2', 'e2'], ['s2', 'sws2'],
     ['s2', 'sr2'], ['sr2', 'sel2'], ['sr2', 'ssl2'], ['sr2', 'ser2'], ['sr2', 'ssr2'], ['e2', 'ses2'],
   ],
   3: [
@@ -270,7 +262,7 @@ const OPENINGS = {
     ['nrs3', 'e3'], ['e3', 'nee3'], ['w3', 's3'], ['s3', 'sws3'], ['s3', 'sr3'], ['s3', 'e3'], ['sr3', 'sel3'],
     ['sr3', 'ssl3'], ['sr3', 'ser3'], ['sr3', 'ssr3'], ['e3', 'ses3'],
     ['stw3', 'stn3'], ['stw3', 'sts3'], ['stn3', 'ste3'], ['sts3', 'ste3'],
-    ['d3w', 'w3'], ['d3w', 'stw3'], ['d3s', 'ste3'], ['d3s', 's3'], ['d3e', 'ste3'], ['d3e', 'e3'], ['d3n', 'nrs3'], ['d3n', 'stn3'],
+    ['d3s', 'ste3'], ['d3s', 's3'], ['d3n', 'nrs3'], ['d3n', 'stn3'],
   ],
 };
 // Cores: one reference-px (floor 3 sheet) point each, served floors. The point must lie inside the core rectangle on every listed floor.
@@ -342,7 +334,8 @@ const TAGS = [
 // phones were never extracted). Review ② re-checks every row against pp. 9-10.
 // Rules: same number or same name in both sources -> keep the library-web row (so PDF E2321 "Special Collections"
 // and N1000 "North Reading Room" give way to web E2320 and N1001). Sub-basement (SB0003) and truncated source names
-// (E0319) are left out. Duplicate numbers in the PDF are merged (W5510) or dropped (E0305 housekeeping).
+// (E0319) are left out. Duplicate numbers in the PDF are merged (W5510: the PDF lists "Grants Management" and
+// "Sponsored Programs" as two rows with one room number; the name joins both) or dropped (E0305 housekeeping).
 // Facility names that contain a donor's name ("William and Jane Knapp Alumni Center") are names of places, not people.
 const PLACES = [
   // floor 5 (emergency-plan-2014)

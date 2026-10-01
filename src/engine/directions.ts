@@ -32,16 +32,20 @@ const SHORT = 1.5;
 
 function walkwayName(plan: Plan, level: number, p: Vec2): string | null {
   const f = plan.floors.find((x) => x.level === level);
-  const s = f?.spaces.find((s) => (s.category === 'walkway' || s.category === 'lounge') && pointInPolygon(p, s.polygon));
+  // Doorway thresholds are walkways too, but "along Doorway" says nothing; name the space the step runs along.
+  const s = f?.spaces.find(
+    (s) => (s.category === 'walkway' || s.category === 'lounge') && s.name !== 'Doorway' && pointInPolygon(p, s.polygon),
+  );
   return s ? s.name : null;
 }
 
 const label = (place: Place) => (place.number ? `${place.name} (${place.number})` : place.name);
 
-export function directions(route: Route, plan: Plan, startName: string, place: Place): { steps: Step[]; totalFt: number } {
+/** totalFt is null when the place is right here (nothing to walk). */
+export function directions(route: Route, plan: Plan, startName: string, place: Place): { steps: Step[]; totalFt: number | null } {
   const steps: Step[] = [];
   const single = route.legs.length === 1 && route.legs[0].points.length === 1;
-  if (single) return { steps: [{ text: `${label(place)} is right here. Approximate location.`, leg: 0, kind: 'arrive', s0: 0, s1: 0 }], totalFt: feet(0) };
+  if (single) return { steps: [{ text: `${label(place)} is right here. Approximate location.`, leg: 0, kind: 'arrive', s0: 0, s1: 0 }], totalFt: null };
 
   route.legs.forEach((leg, li) => {
     if (li > 0) {
@@ -49,7 +53,12 @@ export function directions(route: Route, plan: Plan, startName: string, place: P
       steps.push({ text: `Take the ${t.connector.name} to ${floorName(t.to)}.`, leg: li, kind: 'floor', s0: 0, s1: 0 });
     }
     const pts = leg.points;
-    let open: { verb: string; meters: number; mid: Vec2; s0: number } | null = null;
+    // mid/len: midpoint and length of the step's longest segment, which names the step.
+    let open: { verb: string; meters: number; mid: Vec2; len: number; s0: number } | null = null;
+    const extend = (m: number, mid: Vec2) => {
+      open!.meters += m;
+      if (m > open!.len) Object.assign(open!, { len: m, mid });
+    };
     let heading: Vec2 | null = null;
     let s = 0;
     // The first compass word comes from the first real segment, not from a doorway jog.
@@ -71,14 +80,14 @@ export function directions(route: Route, plan: Plan, startName: string, place: P
           li === 0
             ? `Start at ${startName}. Head ${head}`
             : `Leave the ${route.transitions[li - 1].connector.kind === 'stairs' ? 'stairs' : 'elevator'}, head ${head}`;
-        open = { verb, meters: m, mid, s0: s };
+        open = { verb, meters: m, mid, len: m, s0: s };
         heading = m >= SHORT ? d : null;
         s += m;
         continue;
       }
       if (m < SHORT || heading === null) {
         // A doorway jog, or the first real heading after one: walk on without a new step.
-        open.meters += m;
+        extend(m, mid);
         if (m >= SHORT) heading = d;
         s += m;
         continue;
@@ -86,12 +95,12 @@ export function directions(route: Route, plan: Plan, startName: string, place: P
       const t = turnDeg(heading, d);
       heading = d;
       if (Math.abs(t) < 30) {
-        open.meters += m;
+        extend(m, mid);
         s += m;
         continue;
       }
       close();
-      open = { verb: Math.abs(t) > 150 ? 'Turn around' : t > 0 ? 'Turn left' : 'Turn right', meters: m, mid, s0: s };
+      open = { verb: Math.abs(t) > 150 ? 'Turn around' : t > 0 ? 'Turn left' : 'Turn right', meters: m, mid, len: m, s0: s };
       s += m;
     }
     close();

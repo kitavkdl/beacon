@@ -1,5 +1,6 @@
 // Multi-floor A* over 0.5 m occupancy grids plus connectors (stairs/elevators), then string-pulled per floor.
-import type { Connector, Library, Vec2 } from '../data/schema';
+import type { Connector, Library, Place, Vec2 } from '../data/schema';
+import { pointInPolygon } from './geometry';
 import { buildGrid, CELL, cellCenter, cellIndex, isWalkable, lineOfSight, type Grid } from './grid';
 
 /** Demo weights in meters of walking (not measurements): stairs win one floor, the elevator wins two or more. */
@@ -247,3 +248,6 @@ export function smooth(g: Grid, cells: Vec2[]): Vec2[] {
   out.push(pulled[pulled.length - 1]);
   return out;
 }
+
+/** The point is already in the place's (approximate) zone: there is nothing to route. */
+export const inZone = (p: Point, place: Place): boolean => p.floor === place.floor && pointInPolygon([p.x, p.y], place.zone);

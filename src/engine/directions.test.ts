@@ -36,7 +36,7 @@ describe('directions', () => {
     // 5 m + 4.51 m (3° drift, merged) = 9.51 m = 31.2 ft -> 30; the doorway leg 4.25 m = 13.9 ft -> 15.
     expect(steps.map((s) => s.text)).toEqual([
       'Start at Fixture tag. Head east and walk about 30 ft along North corridor, floor 1.',
-      'Turn right and walk about 15 ft along Doorway.',
+      'Turn right and walk about 15 ft.', // the doorway threshold names nothing
       'Special Collections (E2320) is in this area. Approximate location.',
     ]);
     expect(totalFt).toBe(feet(13.76));
@@ -76,5 +76,14 @@ describe('directions', () => {
     expect(directions(route, lib, 'T', place).steps.map((s) => s.text)).toEqual([
       'Special Collections (E2320) is right here. Approximate location.',
     ]);
+    expect(directions(route, lib, 'T', place).totalFt).toBeNull();
+  });
+
+  it('names a step by its longest segment and never "along Doorway"', () => {
+    // Starts inside the 1 m doorway (x 9-10, y 2-4), then runs east along the north corridor.
+    const route: Route = { legs: [{ floor: 1, points: [[9.25, 2.25], [9.25, 5.25], [19.25, 5.25]] }], transitions: [], lengthM: 13 };
+    const texts = directions(route, lib, 'T', place).steps.map((s) => s.text);
+    expect(texts.join(' ')).not.toMatch(/Doorway/);
+    expect(texts[1]).toMatch(/along North corridor, floor 1\.$/);
   });
 });

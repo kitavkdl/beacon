@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { lineOfSight } from './grid';
-import { connectorCost, MIN_PER_FLOOR, Router } from './route';
+import { connectorCost, inZone, MIN_PER_FLOOR, Router } from './route';
 import { routeFixture } from './routeFixture';
 
 const P = (floor: number, x: number, y: number) => ({ floor, x, y });
@@ -88,5 +88,15 @@ describe('Router', () => {
     const reach = r.reachable(P(1, 2.25, 1.25), true);
     expect(reach(P(3, 15.25, 5.25))).toBe(true);
     expect(reach(P(1, 1.25, 7.25))).toBe(false); // stairs cell, avoid mode
+  });
+});
+
+describe('inZone', () => {
+  const zone: [number, number][] = [[10, 4], [14, 4], [14, 6], [10, 6]];
+  const place = { id: 'E2320', number: 'E2320', name: 'X', floor: 2, zone, entry: [12, 3] as [number, number], source: 'library-web' as const };
+  it('is true only on the same floor inside the zone', () => {
+    expect(inZone({ floor: 2, x: 12, y: 5 }, place)).toBe(true);
+    expect(inZone({ floor: 1, x: 12, y: 5 }, place)).toBe(false);
+    expect(inZone({ floor: 2, x: 9, y: 5 }, place)).toBe(false);
   });
 });

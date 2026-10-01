@@ -26,12 +26,16 @@ export function Director({ shots, command, onShot, stepAt, onStep, onDone }: {
   onDone: () => void;
 }) {
   const camera = useThree((s) => s.camera);
-  const controls = useThree((s) => s.controls) as unknown as Controls | null;
+  // Read controls at use time: OrbitControls registers itself in an effect, possibly after ours ran.
+  const get = useThree((s) => s.get);
+  const controls = () => get().controls as unknown as Controls | null;
   const dom = useThree((s) => s.gl.domElement);
   const t = useRef(0);
   const playing = useRef(false);
   const lastTarget = useRef<[number, number, number] | null>(null);
   const shotIdx = useRef(-1);
+  /** Id of the last command handled; Skip applies once, a new route afterwards plays normally. */
+  const handled = useRef(-1);
   const stepIdx = useRef<number | null>(null);
 
   const apply = (time: number) => {
@@ -62,17 +66,20 @@ export function Director({ shots, command, onShot, stepAt, onStep, onDone }: {
   const finish = () => {
     if (!playing.current) return;
     playing.current = false;
-    if (controls) {
-      if (lastTarget.current) controls.target.set(...lastTarget.current);
-      controls.enabled = true;
-      controls.update();
+    const c = controls();
+    if (c) {
+      if (lastTarget.current) c.target.set(...lastTarget.current);
+      c.enabled = true;
+      c.update();
     }
     onDone();
   };
 
   useEffect(() => {
     if (!shots.length) return;
-    if (command.kind === 'skip') {
+    const fresh = handled.current !== command.id;
+    handled.current = command.id;
+    if (command.kind === 'skip' && fresh) {
       playing.current = true;
       apply(totalDuration(shots));
       finish();
@@ -82,7 +89,8 @@ export function Director({ shots, command, onShot, stepAt, onStep, onDone }: {
     shotIdx.current = -1;
     stepIdx.current = null;
     playing.current = true;
-    if (controls) controls.enabled = false;
+    const c = controls();
+    if (c) c.enabled = false;
     apply(0);
     // Capture phase, so playback ends (and controls are re-enabled) before OrbitControls sees the same event.
     const stop = () => finish();

@@ -80,7 +80,7 @@ export function FinderPanel(p: {
             <ol className="steps">
               {p.steps.map((s, i) => <li key={i} className={i === p.activeStep ? 'on' : ''}>{s.text}</li>)}
             </ol>
-            <p>Total: about {p.totalFt} ft</p>
+            {p.totalFt !== null && <p>Total: about {p.totalFt} ft</p>}
             {p.avoidStairs && <p className="note">{STEP_FREE}</p>}
             <div className="row">
               <button type="button" onClick={p.onReplay}>Replay</button>

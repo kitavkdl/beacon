@@ -4,7 +4,7 @@ import { Canvas } from '@react-three/fiber';
 import { useMemo, useState } from 'react';
 import { MELVILLE } from '../data/library';
 import { directions } from '../engine/directions';
-import { Router } from '../engine/route';
+import { inZone, Router, type Route } from '../engine/route';
 import { searchPlaces } from '../engine/search';
 import { Building, STACK_SCALE } from '../scene/Building';
 import { cameraScript, lengthOf, MAX_POLAR } from './cameraScript';
@@ -38,10 +38,12 @@ export default function Finder({ tagId, onTag }: { tagId: string | null; onTag: 
   const tag = lib.tags.find((t) => t.id === tagId) ?? null;
   const place = lib.places.find((p) => p.id === placeId) ?? null;
   const results = useMemo(() => searchPlaces(lib.places, query), [query]);
-  const route = useMemo(
-    () => (tag && place ? router.route(tag, { floor: place.floor, x: place.entry[0], y: place.entry[1] }, avoidStairs) : null),
-    [router, tag, place, avoidStairs],
-  );
+  const route = useMemo((): Route | null => {
+    if (!tag || !place) return null;
+    // Already standing in the (approximate) zone: "right here", no walk and no follow shots.
+    if (inZone(tag, place)) return { legs: [{ floor: tag.floor, points: [[tag.x, tag.y]] }], transitions: [], lengthM: 0 };
+    return router.route(tag, { floor: place.floor, x: place.entry[0], y: place.entry[1] }, avoidStairs);
+  }, [router, tag, place, avoidStairs]);
   const dir = useMemo(() => (route && tag && place ? directions(route, lib, tag.name, place) : null), [route, tag, place]);
   const shots = useMemo(() => (route && place ? cameraScript(route, lib, STACK_SCALE, place.zone, reducedMotion()) : []), [route, place]);
 
