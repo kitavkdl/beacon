@@ -106,6 +106,14 @@ npm run build
    (GitHub 레포의 Default branch도 `main`이어야 한다).
    연결 설정: framework Vite, build `npm run build`, output `dist`. 올라가는 것은 `dist/`의 정적 파일(HTML·JS·CSS)뿐, 도면 이미지 없음.
 
+## 8a. M7 Melville 길찾기 데모 (2026-10-01, beacon-implement)
+
+- 설계: `docs/superpowers/specs/2026-10-01-melville-room-finder-design.md`, 계획: `docs/superpowers/plans/2026-10-01-melville-room-finder.md`.
+- 데이터: `scripts/trace-melville.mjs` → `src/data/melville.json` (`npm run trace:melville`). 보정·정합·규칙은 `docs/FLOORPLAN_TRACING.md` "Melville Library".
+- 화면: 상단 탭(`src/Root.tsx`). NCS 탭은 `App.tsx` 그대로이고, 탭을 바꾸면 NCS 데모가 처음 상태로 돌아간다(BLE 스캔을 화면 밖에서 돌리지 않으려는 선택).
+- 공식 주소: https://beacon.ideantoe.com (Vercel 프로젝트 `beacon-kaeq`, main push = production 배포).
+- 남은 주의: 2014년 도면이라 2016년 리노베이션이 반영되지 않았을 수 있다. 방 위치는 날개·층 단위의 대략 위치다. 층고 4.5 m는 가정이다. 계단 없는 경로는 현장에서 확인하지 않았다.
+
 ## 9. 알려진 한계·주의
 
 - 층고 4.3 m는 가정. 벽 감쇠는 모델에 없음(SPEC "Out of scope").
